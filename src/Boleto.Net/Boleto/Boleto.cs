@@ -624,5 +624,5 @@ namespace BoletoNet
 				throw new Exception("Erro durante a formatação dos campos.", ex);
 			}
 		}
-	}
+    }
 }

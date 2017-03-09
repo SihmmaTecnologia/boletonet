@@ -49,6 +49,12 @@ namespace BoletoNet
             //Verifica se o nosso número é válido
             if (Utils.ToInt64(boleto.NossoNumero) == 0 || boleto.NossoNumero.Length > 8)
                 throw new NotImplementedException("Nosso número inválido");
+            else if (boleto.NossoNumero.Length < 6)
+            {
+                boleto.NossoNumero = DateTime.Now.ToString("yy") + "2" + Utils.FormatCode(boleto.NossoNumero, 5);
+                boleto.DigitoNossoNumero = DigNossoNumeroSicredi(boleto);
+                boleto.NossoNumero += boleto.DigitoNossoNumero;
+            }
             else if (boleto.NossoNumero.Length == 6)
             {
                 boleto.NossoNumero = DateTime.Now.ToString("yy") + boleto.NossoNumero;
@@ -61,7 +67,6 @@ namespace BoletoNet
                 boleto.NossoNumero += boleto.DigitoNossoNumero;
                 //boleto.DigitoNossoNumero += DigNossoNumeroSicredi(boleto);
             }
-
 
             //Verifica se data do processamento é valida
 			if (boleto.DataProcessamento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)

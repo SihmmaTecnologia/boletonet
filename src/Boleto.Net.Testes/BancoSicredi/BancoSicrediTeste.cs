@@ -20,6 +20,8 @@ namespace Boleto.Net.Testes.BancoSicredi
         {
             BoletoBancario boletoBancario = GerarBoleto();
             boletoBancario.Boleto.Valida();
+
+            boletoBancario.Banco.FormataNossoNumero(boletoBancario.Boleto);
         }
 
         #region Gerar remessa
@@ -57,11 +59,11 @@ namespace Boleto.Net.Testes.BancoSicredi
             Thread.Sleep(500);
             DateTime vencimento = DateTime.Now.AddDays(5);
 
-            var agencia = "811";
-            var conta = "81111";
+            var agencia = "0812";
+            var conta = "81168";
 
-            var cedente = new Cedente("35.683.343/0001-82", "Empresa Teste", agencia, string.Empty, conta, "0");
-            cedente.Codigo = "08111081111";
+            var cedente = new Cedente("35.683.343/0001-82", "Empresa Teste", agencia, string.Empty, conta, "8");
+            cedente.Codigo = "08121581168";
 
             BoletoNet.Boleto boleto = new BoletoNet.Boleto(vencimento, GerarValor(), "1", GerarNossoNumero(), cedente);
 
@@ -102,10 +104,8 @@ namespace Boleto.Net.Testes.BancoSicredi
 
         private static string GerarNossoNumero()
         {
-            var prefix = DateTime.Now.Year.ToString().Substring(2) + "20";
-
             var rnd = new Random(DateTime.Now.Millisecond);
-            return prefix + rnd.Next(0, 999).ToString();
+            return rnd.Next(0, 99).ToString();
         }
         #endregion
         
