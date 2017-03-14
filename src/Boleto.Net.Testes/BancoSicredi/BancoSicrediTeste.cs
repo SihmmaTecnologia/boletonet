@@ -16,6 +16,14 @@ namespace Boleto.Net.Testes.BancoSicredi
         const string arquivoRetorno = @"BancoSicredi\RetornoSicredi.txt";
 
         [TestMethod]
+        public void BancoSicredi_ObterSequencialApartirDoNossoNumero()
+        {
+            var banco = new Banco(748);
+            var nossoNumero = banco.ObterNossoNumeroSemConvenioOuDigitoVerificador(0, "162004775");
+            Assert.AreEqual(477, nossoNumero);
+        }
+
+        [TestMethod]
         public void BancoSicredi_ValidarBoleto()
         {
             BoletoBancario boletoBancario = GerarBoleto();

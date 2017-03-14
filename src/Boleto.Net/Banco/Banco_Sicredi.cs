@@ -47,33 +47,16 @@ namespace BoletoNet
             else boleto.LocalPagamento = "PAGÁVEL PREFERENCIALMENTE NAS COOPERATIVAS DE CRÉDITO DO SICREDI";
 
             //Verifica se o nosso número é válido
-            if (Utils.ToInt64(boleto.NossoNumero) == 0 || boleto.NossoNumero.Length > 8)
-                throw new NotImplementedException("Nosso número inválido");
-            else if (boleto.NossoNumero.Length < 6)
-            {
-                boleto.NossoNumero = DateTime.Now.ToString("yy") + "2" + Utils.FormatCode(boleto.NossoNumero, 5);
-                boleto.DigitoNossoNumero = DigNossoNumeroSicredi(boleto);
-                boleto.NossoNumero += boleto.DigitoNossoNumero;
-            }
-            else if (boleto.NossoNumero.Length == 6)
-            {
-                boleto.NossoNumero = DateTime.Now.ToString("yy") + boleto.NossoNumero;
-                boleto.DigitoNossoNumero = DigNossoNumeroSicredi(boleto);
-                boleto.NossoNumero += boleto.DigitoNossoNumero;
-            }
-            else if (boleto.NossoNumero.Length == 8)
-            {
-                boleto.DigitoNossoNumero = DigNossoNumeroSicredi(boleto);
-                boleto.NossoNumero += boleto.DigitoNossoNumero;
-                //boleto.DigitoNossoNumero += DigNossoNumeroSicredi(boleto);
-            }
+            string digitoVerificadorNossoNumro;
+            boleto.NossoNumero = GerarNossoNumero(boleto.Cedente.Codigo, boleto.NossoNumero, out digitoVerificadorNossoNumro);
+            boleto.DigitoNossoNumero = digitoVerificadorNossoNumro;
 
             //Verifica se data do processamento é valida
-			if (boleto.DataProcessamento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
+            if (boleto.DataProcessamento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
                 boleto.DataProcessamento = DateTime.Now;
 
             //Verifica se data do documento é valida
-			if (boleto.DataDocumento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
+            if (boleto.DataDocumento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
                 boleto.DataDocumento = DateTime.Now;
 
             string infoFormatoCodigoCedente = "formato AAAAPPCCCCC, onde: AAAA = Número da agência, PP = Posto do beneficiário, CCCCC = Código do beneficiário";
@@ -82,7 +65,7 @@ namespace BoletoNet
 
             if (string.IsNullOrEmpty(codigoCedente))
                 throw new BoletoNetException("Código do cedente deve ser informado, " + infoFormatoCodigoCedente);
-            else if (boleto.Cedente.ContaBancaria != null && 
+            else if (boleto.Cedente.ContaBancaria != null &&
                 (!codigoCedente.StartsWith(boleto.Cedente.ContaBancaria.Agencia) ||
                 (!codigoCedente.EndsWith(boleto.Cedente.ContaBancaria.Conta))))
                 throw new BoletoNetException("Código do cedente deve estar no " + infoFormatoCodigoCedente);
@@ -98,6 +81,42 @@ namespace BoletoNet
 
             FormataLinhaDigitavel(boleto);
             //FormataNossoNumero(boleto);
+        }
+
+        private static string GerarNossoNumero(string codigoBeneficiario, string sequencial, out string digitoVerificador)
+        {
+            if (Utils.ToInt64(sequencial) == 0 || sequencial.Length > 10)
+                throw new BoletoNetException("Nosso número inválido");
+
+            string nossoNumero;
+            if (sequencial.Length == 9)
+            {
+                nossoNumero = sequencial.Substring(0, 8);
+                //Verifica se o digito verificador esta correto.
+                digitoVerificador = DigNossoNumeroSicredi(codigoBeneficiario, nossoNumero);
+                if (sequencial != (nossoNumero + digitoVerificador))
+                    throw new BoletoNetException("Digito verificador é inválido!");
+            }
+            else if (sequencial.Length < 6)
+            {
+                nossoNumero = DateTime.Now.ToString("yy") + "2" + Utils.FormatCode(sequencial, 5);
+                digitoVerificador = DigNossoNumeroSicredi(codigoBeneficiario, nossoNumero);
+            }
+            else if (sequencial.Length == 6)
+            {
+                nossoNumero = DateTime.Now.ToString("yy") + sequencial;
+                digitoVerificador = DigNossoNumeroSicredi(codigoBeneficiario, nossoNumero);
+            }
+            else if (sequencial.Length == 8)
+            {
+                nossoNumero = sequencial;
+                digitoVerificador = DigNossoNumeroSicredi(codigoBeneficiario, sequencial);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            return nossoNumero + digitoVerificador;
         }
 
         private string ObterInformacoesCarteirasDisponiveis()
@@ -584,12 +603,17 @@ namespace BoletoNet
             return d;
         }
 
-        public string DigNossoNumeroSicredi(Boleto boleto)
+        /// <summary>
+        /// <para>
+        /// Gerar digito verificador Sicredi
+        /// </para>
+        /// </summary>
+        /// <param name="codigoBeneficiario">Código do beneficiário no formato aaaappccccc</param>
+        /// <param name="nossoNumero">nosso número</param>
+        /// <returns></returns>
+        public static string DigNossoNumeroSicredi(string codigoBeneficiario, string nossoNumero)
         {
-            string codigoCedente = boleto.Cedente.Codigo;           //código do beneficiário aaaappccccc
-            string nossoNumero = boleto.NossoNumero;                //ano atual (yy), indicador de geração do nosso número (b) e o número seqüencial do beneficiário (nnnnn);
-
-            string seq = string.Concat(codigoCedente, nossoNumero); // = aaaappcccccyybnnnnn
+            string seq = string.Concat(codigoBeneficiario, nossoNumero); // = aaaappcccccyybnnnnn
             /* Variáveis
              * -------------
              * d - Dígito
@@ -814,13 +838,12 @@ namespace BoletoNet
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0019, 001, 0, CodJuros, ' '));                                  //019-019  Tipo de juros: 'A' - VALOR / 'B' PERCENTUAL
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0020, 028, 0, string.Empty, ' '));                              //020-047
                 #region Nosso Número + DV
-                string vAuxNossoNumeroComDV = boleto.NossoNumero;
-                if (string.IsNullOrEmpty(boleto.DigitoNossoNumero) || boleto.NossoNumero.Length < 9)
-                {
-                    boleto.DigitoNossoNumero = DigNossoNumeroSicredi(boleto); 
-                    vAuxNossoNumeroComDV = boleto.NossoNumero + boleto.DigitoNossoNumero;
-                }
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0048, 009, 0, vAuxNossoNumeroComDV, '0'));                      //048-056
+
+                string digitoVerificadorNossoNumro;
+                boleto.NossoNumero = GerarNossoNumero(boleto.Cedente.Codigo, boleto.NossoNumero, out digitoVerificadorNossoNumro);
+                boleto.DigitoNossoNumero = digitoVerificadorNossoNumro;
+                
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0048, 009, 0, boleto.NossoNumero, '0'));                        //048-056
                 #endregion
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0057, 006, 0, string.Empty, ' '));                              //057-062
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediDataAAAAMMDD_________, 0063, 008, 0, boleto.DataProcessamento, ' '));                  //063-070
@@ -1071,10 +1094,23 @@ namespace BoletoNet
 
         public override long ObterNossoNumeroSemConvenioOuDigitoVerificador(long convenio, string nossoNumero)
         {
-            long num;
-            if (nossoNumero.Length >= 8 && long.TryParse(nossoNumero.Substring(0, 8), out num))
+            if (nossoNumero.Length == 8 || nossoNumero.Length == 9)
             {
-                return num;
+                if (nossoNumero.Length == 9)
+                {
+                    //remover digito verificador
+                    nossoNumero = nossoNumero.Substring(0, 8);
+                    nossoNumero = nossoNumero.Substring(3);                    
+                }
+                else if (nossoNumero.Length == 8)
+                {
+                    nossoNumero = nossoNumero.Substring(3);
+                }
+                long num;
+                if (long.TryParse(nossoNumero, out num))
+                {
+                    return num;
+                }
             }
             throw new BoletoNetException("Nosso número é inválido!");
         }
