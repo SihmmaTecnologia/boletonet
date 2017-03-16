@@ -23,12 +23,16 @@ namespace BoletoNet
 
         public override void FormataNossoNumero(Boleto boleto)
         {
-            boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 10);
+            throw new NotImplementedException();
+        }
+
+        public string FormatarNossoNumero(Boleto boleto)
+        {
+            return Utils.FormatCode(boleto.NossoNumero, 10);
         }
 
         public override void ValidaBoleto(Boleto boleto)
         {
-            boleto.NossoNumero = boleto.NossoNumero.PadLeft(10, '0');
             if (boleto.Cedente.Codigo.Length != 7)
                 throw new Exception("Para a carteira 18, o código do cedente deve ter no mínimo 7 dígitos, ou seja, deve ser maior que 1 milhão");
         }

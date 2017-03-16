@@ -76,10 +76,7 @@ namespace BoletoNet
                 if (boleto.NossoNumero.Length > 8)
                     throw new NotImplementedException("A quantidade de dígitos do nosso número para a carteira "
                         + boleto.Carteira + ", são 8 números.");
-
-                if (boleto.NossoNumero.Length < 8)
-                    boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 8);
-
+                                
                 //É obrigatório o preenchimento do número do documento
                 if (boleto.Carteira == "106" || boleto.Carteira == "107" || boleto.Carteira == "122" || boleto.Carteira == "142" || boleto.Carteira == "143" || boleto.Carteira == "195" || boleto.Carteira == "196" || boleto.Carteira == "198")
                 {
@@ -350,11 +347,11 @@ namespace BoletoNet
             }
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
             try
             {
-                boleto.NossoNumero = string.Format("{0}/{1}-{2}", boleto.Carteira, boleto.NossoNumero, _dacNossoNumero);
+                return string.Format("{0}/{1}-{2}", boleto.Carteira, boleto.NossoNumero, _dacNossoNumero);
             }
             catch (Exception ex)
             {

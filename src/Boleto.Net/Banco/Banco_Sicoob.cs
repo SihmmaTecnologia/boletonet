@@ -37,16 +37,16 @@ namespace BoletoNet
 
         #region FORMATAÇÕES
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public override long GerarNossoNumero(DadosGeracaoNossoNumero dados)
         {
             //Variaveis
             int resultado = 0;
             int dv = 0;
             int resto = 0;
             String constante = "319731973197319731973";
-            String cooperativa = boleto.Cedente.ContaBancaria.Agencia;
-            String codigo = boleto.Cedente.Codigo + boleto.Cedente.DigitoCedente.ToString();
-            String nossoNumero = boleto.NossoNumero;
+            String cooperativa = dados.Cedente.ContaBancaria.Agencia;
+            String codigo = dados.Cedente.Codigo; // + dados.Cedente.DigitoCedente.ToString();
+            String nossoNumero = dados.NossoNumero;
             StringBuilder seqValidacao = new StringBuilder();
 
             /*
@@ -90,8 +90,7 @@ namespace BoletoNet
                 dv = 11 - resto;
             }
             //Montando nosso número
-            boleto.NossoNumero = boleto.NossoNumero + "-" + dv.ToString();
-            boleto.DigitoNossoNumero = dv.ToString();
+            return long.Parse(dados.NossoNumero + dv.ToString());
         }
 
         /**
@@ -289,7 +288,6 @@ namespace BoletoNet
 
             //Aplicando formatações
             this.FormataCodigoCliente(boleto);
-            this.FormataNossoNumero(boleto);
             this.FormataCodigoBarra(boleto);
             this.FormataLinhaDigitavel(boleto);
         }
@@ -382,7 +380,7 @@ namespace BoletoNet
 
                 if (string.IsNullOrEmpty(boleto.NossoNumero))
                 {
-                    FormataNossoNumero(boleto);
+                    FormatarNossoNumero(boleto);
                 }
                 base.GerarDetalheRemessa(boleto, numeroRegistro, tipoArquivo);
 
@@ -668,5 +666,9 @@ namespace BoletoNet
             return vRetorno;
         }
 
+        public string FormatarNossoNumero(Boleto boleto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

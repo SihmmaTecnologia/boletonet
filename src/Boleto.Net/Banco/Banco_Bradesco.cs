@@ -206,9 +206,9 @@ namespace BoletoNet
         }
 
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
-            boleto.NossoNumero = string.Format("{0}/{1}-{2}", Utils.FormatCode(boleto.Carteira, 3), boleto.NossoNumero, boleto.DigitoNossoNumero);
+            return string.Format("{0}/{1}-{2}", Utils.FormatCode(boleto.Carteira, 3), boleto.NossoNumero, boleto.DigitoNossoNumero);
         }
         public override string GerarHeaderRemessa(string numeroConvenio, Cedente cedente, TipoArquivo tipoArquivo, int numeroArquivoRemessa, Boleto boletos)
         {
@@ -241,8 +241,6 @@ namespace BoletoNet
             //Verifica se o nosso número é válido
             if (boleto.NossoNumero.Length > 11)
                 throw new NotImplementedException("A quantidade de dígitos do nosso número, são 11 números.");
-            else if (boleto.NossoNumero.Length < 11)
-                boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 11);
 
             //Verificar se a Agencia esta correta
             if (boleto.Cedente.ContaBancaria.Agencia.Length > 4)
@@ -280,7 +278,6 @@ namespace BoletoNet
             
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);
-            FormataNossoNumero(boleto);
         }
         #endregion IBanco Members
 

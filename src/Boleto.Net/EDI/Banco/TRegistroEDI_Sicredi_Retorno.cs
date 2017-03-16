@@ -10,7 +10,7 @@ namespace BoletoNet.EDI.Banco
     public class TRegistroEDI_Sicredi_Retorno : TRegistroEDI
     {
 
-		#region Atributos e Propriedades
+        #region Atributos e Propriedades
         private string _IdentificacaoRegDetalhe = String.Empty;
 
         public string IdentificacaoRegDetalhe
@@ -185,7 +185,7 @@ namespace BoletoNet.EDI.Banco
         {
             get { return _Multa; }
             set { _Multa = value; }
-        }        
+        }
         private string _Filler7 = String.Empty;
 
         public string Filler7
@@ -245,47 +245,47 @@ namespace BoletoNet.EDI.Banco
              * TCampoRegistroEDI.
              */
             #region TODOS os Campos
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0001, 001, 0, string.Empty, ' ')); //001-001
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0002, 012, 0, string.Empty, ' ')); //002-013
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0014, 001, 0, string.Empty, ' ')); //014-014
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0015, 005, 0, string.Empty, ' ')); //015-019
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0020, 005, 0, string.Empty, ' ')); //020-025
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0025, 001, 0, string.Empty, ' ')); //025-025
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0026, 022, 0, string.Empty, ' ')); //026-047
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0048, 015, 0, string.Empty, ' ')); //048-062
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0063, 046, 0, string.Empty, ' ')); //063-108
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0109, 002, 0, string.Empty, ' ')); //109-110
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0111, 006, 0, string.Empty, ' ')); //111-116
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0117, 010, 0, string.Empty, ' ')); //117-126
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0127, 020, 0, string.Empty, ' ')); //127-146
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0147, 006, 0, string.Empty, ' ')); //147-152
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0153, 013, 0, string.Empty, ' ')); //153-165
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0166, 009, 0, string.Empty, ' ')); //166-174
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0175, 001, 0, string.Empty, ' ')); //175-175
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0176, 013, 0, string.Empty, ' ')); //176-188
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0189, 013, 0, string.Empty, ' ')); //189-201
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0202, 026, 0, string.Empty, ' ')); //202-227
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0228, 013, 0, string.Empty, ' ')); //228-240
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0241, 013, 0, string.Empty, ' ')); //241-253
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0254, 013, 0, string.Empty, ' ')); //254-266
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0267, 013, 0, string.Empty, ' ')); //267-279
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0280, 013, 0, string.Empty, ' ')); //280-292
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0293, 002, 0, string.Empty, ' ')); //293-294
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0295, 001, 0, string.Empty, ' ')); //295-295
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0296, 023, 0, string.Empty, ' ')); //296-318
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0319, 010, 0, string.Empty, ' ')); //318-328
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0329, 008, 0, string.Empty, ' ')); //329-336
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0337, 058, 0, string.Empty, ' ')); //337-394
-            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0395, 006, 0, string.Empty, ' ')); //395-400
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0001, 001, 0, string.Empty, ' ')); //001-001  00
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0002, 012, 0, string.Empty, ' ')); //002-013  01
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0014, 001, 0, string.Empty, ' ')); //014-014  02
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0015, 005, 0, string.Empty, ' ')); //015-019  03
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0020, 005, 0, string.Empty, ' ')); //020-025  04
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0025, 001, 0, string.Empty, ' ')); //025-025  05
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0026, 022, 0, string.Empty, ' ')); //026-047  06
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0048, 015, 0, string.Empty, ' ')); //048-062  07
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0063, 046, 0, string.Empty, ' ')); //063-108  08
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0109, 002, 0, string.Empty, ' ')); //109-110  09
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0111, 006, 0, string.Empty, ' ')); //111-116  10
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0117, 010, 0, string.Empty, ' ')); //117-126  11
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0127, 020, 0, string.Empty, ' ')); //127-146  12
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0147, 006, 0, string.Empty, ' ')); //147-152  13
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0153, 013, 0, string.Empty, ' ')); //153-165  14
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0166, 009, 0, string.Empty, ' ')); //166-174  15
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0175, 001, 0, string.Empty, ' ')); //175-175  16
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0176, 013, 0, string.Empty, ' ')); //176-188  17
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0189, 013, 0, string.Empty, ' ')); //189-201  18
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0202, 026, 0, string.Empty, ' ')); //202-227  19
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0228, 013, 0, string.Empty, ' ')); //228-240  20
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0241, 013, 0, string.Empty, ' ')); //241-253  21
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0254, 013, 0, string.Empty, ' ')); //254-266  22
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0267, 013, 0, string.Empty, ' ')); //267-279  23
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0280, 013, 0, string.Empty, ' ')); //280-292  24
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0293, 002, 0, string.Empty, ' ')); //293-294  25
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0295, 001, 0, string.Empty, ' ')); //295-295  26
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0296, 023, 0, string.Empty, ' ')); //296-318  27
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0319, 010, 0, string.Empty, ' ')); //318-328  28
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0329, 008, 0, string.Empty, ' ')); //329-336  29
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0337, 058, 0, string.Empty, ' ')); //337-394  30
+            this._CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0395, 006, 0, string.Empty, ' ')); //395-400  31
             #endregion
         }
-		
-		/// <summary>
-		/// Aqui iremos atribuir os valores das propriedades em cada campo correspondente do Registro EDI
-		/// e codificaremos a linha para obter uma string formatada com o nosso layout.
-		/// Repare que declarei as propriedades em uma ordem tal que a adição dos objetos TCampoRegistroEDI na propriedade
-		/// _CamposEDI siga a mesma ordem. Portanto, utilizarei o índice na atribuição.
-		/// </summary>
+
+        /// <summary>                                                                                                                       
+        /// Aqui iremos atribuir os valores das propriedades em cada campo correspondente do Registro EDI                                   
+        /// e codificaremos a linha para obter uma string formatada com o nosso layout.
+        /// Repare que declarei as propriedades em uma ordem tal que a adição dos objetos TCampoRegistroEDI na propriedade
+        /// _CamposEDI siga a mesma ordem. Portanto, utilizarei o índice na atribuição.
+        /// </summary>
         public override void CodificarLinha()
         {
             #region Todos os Campos
@@ -294,17 +294,17 @@ namespace BoletoNet.EDI.Banco
             //
             base.CodificarLinha(); //Aqui que eu chamo efetivamente a rotina de codificação; o resultado será exibido na propriedade LinhaRegistro.
         }
-		
-		/// <summary>
-		/// Agora, faço o inverso da codificação. Decodifico o valor da propriedade LinhaRegistro e separo em cada campo.
-		/// Cada campo é separado na propriedade ValorNatural de cada item da prop. _CamposEDI. Como esta é do tipo object, para atribuir
-		/// nas propriedades do registro é necessário fazer um cast para o tipo de dado adequado. Caso ocorra algum erro na decodificação,
-		/// uma exceção será disparada, provavelmente por causa de impossibilidade de fazer um cast na classe pai. Portanto, o layout deve estar
-		/// correto!
-		/// </summary>
-		public override void DecodificarLinha()
-		{
-			base.DecodificarLinha();
+
+        /// <summary>
+        /// Agora, faço o inverso da codificação. Decodifico o valor da propriedade LinhaRegistro e separo em cada campo.
+        /// Cada campo é separado na propriedade ValorNatural de cada item da prop. _CamposEDI. Como esta é do tipo object, para atribuir
+        /// nas propriedades do registro é necessário fazer um cast para o tipo de dado adequado. Caso ocorra algum erro na decodificação,
+        /// uma exceção será disparada, provavelmente por causa de impossibilidade de fazer um cast na classe pai. Portanto, o layout deve estar
+        /// correto!
+        /// </summary>
+        public override void DecodificarLinha()
+        {
+            base.DecodificarLinha();
             //
             this._IdentificacaoRegDetalhe = (string)this._CamposEDI[00].ValorNatural;
             this._Filler1 = (string)this._CamposEDI[01].ValorNatural;
@@ -339,26 +339,26 @@ namespace BoletoNet.EDI.Banco
             this._Filler9 = (string)this._CamposEDI[30].ValorNatural;
             this._NumeroSequencialRegistro = (string)this._CamposEDI[31].ValorNatural;
             //
-		}
-	}
+        }
+    }
 
-	/// <summary>
-	/// Classe que irá representar o arquivo EDI em si
-	/// </summary>
+    /// <summary>
+    /// Classe que irá representar o arquivo EDI em si
+    /// </summary>
     public class TArquivoSicrediRetorno_EDI : TEDIFile
-	{
-		/*
+    {
+        /*
 		 * De modo geral, apenas preciso sobreescrever o método de decodificação de linhas,
 		 * pois preciso adicionar um objeto do tipo registro na coleção do arquivo, passar a linha que vem do arquivo
 		 * neste objeto novo, e decodificá-lo para separar nos campos.
 		 * O DecodeLine é chamado a partir do método LoadFromFile() (ou Stream) da classe base.
 		 */
-		protected override void DecodeLine(string Line)
-		{
-			base.DecodeLine(Line);
+        protected override void DecodeLine(string Line)
+        {
+            base.DecodeLine(Line);
             Lines.Add(new TRegistroEDI_Sicredi_Retorno()); //Adiciono a linha a ser decodificada
-			Lines[Lines.Count - 1].LinhaRegistro = Line; //Atribuo a linha que vem do arquivo
+            Lines[Lines.Count - 1].LinhaRegistro = Line; //Atribuo a linha que vem do arquivo
             Lines[Lines.Count - 1].DecodificarLinha(); //Finalmente, a separação das substrings na linha do arquivo.
-		}
-	}
+        }
+    }
 }

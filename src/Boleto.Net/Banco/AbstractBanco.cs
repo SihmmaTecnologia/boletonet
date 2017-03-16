@@ -284,7 +284,7 @@ namespace BoletoNet
         /// <summary>
         /// Formata nosso número
         /// </summary>
-        public virtual void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
             throw new NotImplementedException("Função não implementada na classe filha. Implemente na classe que está sendo criada.");
         }
@@ -765,6 +765,11 @@ namespace BoletoNet
         /// </summary>
         /// <returns></returns>
         public virtual long ObterNossoNumeroSemConvenioOuDigitoVerificador(long convenio, string nossoNumero)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual long GerarNossoNumero(DadosGeracaoNossoNumero dados)
         {
             throw new NotImplementedException();
         }

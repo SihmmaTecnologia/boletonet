@@ -200,11 +200,11 @@ namespace BoletoNet
             }
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
             try
             {
-                boleto.NossoNumero = boleto.NossoNumero.Trim().Replace(".", "").Replace("-", "");
+                var nossoNumero = boleto.NossoNumero.Trim().Replace(".", "").Replace("-", "");
 
                 if (string.IsNullOrEmpty(boleto.NossoNumero))
                     throw new Exception("Nosso Número não informado");
@@ -212,12 +212,14 @@ namespace BoletoNet
                 if (boleto.NossoNumero.Length > 8)
                     throw new Exception("Tamanho máximo para o Nosso Número são de 8 caracteres");
 
-                boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 8);
+                nossoNumero = Utils.FormatCode(boleto.NossoNumero, 8);
 
                 int D1 = CalculaDVNossoNumero(boleto.NossoNumero);
 
                 int D2 = CalculaDVNossoNumero(string.Concat(boleto.NossoNumero, D1), 10);
-                boleto.NossoNumero = string.Format("{0}.{1}{2}", boleto.NossoNumero, D1, D2);
+                nossoNumero = string.Format("{0}.{1}{2}", boleto.NossoNumero, D1, D2);
+
+                return nossoNumero;
             }
             catch (Exception ex)
             {

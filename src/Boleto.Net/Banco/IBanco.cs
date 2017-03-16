@@ -13,11 +13,7 @@ namespace BoletoNet
         /// <summary>
         /// Formata a linha digital
         /// </summary>
-        void FormataLinhaDigitavel(Boleto boleto);
-        /// <summary>
-        /// Formata o nosso número
-        /// </summary>
-        void FormataNossoNumero(Boleto boleto);
+        void FormataLinhaDigitavel(Boleto boleto);        
         /// <summary>
         /// Formata o número do documento, alguns bancos exige uma formatação. Tipo: 123-4
         /// </summary>
@@ -134,11 +130,23 @@ namespace BoletoNet
         bool ValidarRemessa(TipoArquivo tipoArquivo, string numeroConvenio, IBanco banco, Cedente cedente, Boletos boletos, int numeroArquivoRemessa, out string mensagem);
 
         string ChaveASBACE { get; set; }
-
+        
         /// <summary>
         /// Obtém nosso número sem DV e sem código do Convênio.
         /// </summary>
         /// <returns></returns>
         long ObterNossoNumeroSemConvenioOuDigitoVerificador(long convenio, string nossoNumero);
+
+        /// <summary>
+        /// Gerar Nosso número com as regras específicas do banco
+        /// </summary>
+        /// <param name="dados">Dados para geração do Nosso número</param>
+        /// <returns></returns>
+        long GerarNossoNumero(DadosGeracaoNossoNumero dados);
+
+        /// <summary>
+        /// Formata o nosso número
+        /// </summary>
+        string FormatarNossoNumero(Boleto boleto);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Web.UI;
 using BoletoNet.Util;
+using BoletoNet.Excecoes;
 
 [assembly: WebResource("BoletoNet.Imagens.347.jpg", "image/jpg")]
 
@@ -40,12 +41,7 @@ namespace BoletoNet
             //O número da conta corrente são 7 dígitos
             if (boleto.Cedente.ContaBancaria.Conta.Length != 7)
                 throw new Exception("O número da conta corrente do cedente são 7 números.");
-
-            //Verifica se o tamanho para o NossoNumero
-            // 7 para cobrança registrada
-            // 13 para cobrança sem registro
-            boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 13);
-
+            
             // Calcula o digitão de cobrança DAC (Nosso Número/Agência/Conta Corrente)
             _dacDigitaoCobranca = Mod10(boleto.NossoNumero + boleto.Cedente.ContaBancaria.Agencia + boleto.Cedente.ContaBancaria.Conta);
 
@@ -207,5 +203,17 @@ namespace BoletoNet
             return vRetorno;
         }
 
+        public override long GerarNossoNumero(DadosGeracaoNossoNumero dados)
+        {            
+            return dados.Sequencial;
+        }
+
+        public string FormatarNossoNumero(Boleto boleto)
+        {
+            //Verifica se o tamanho para o NossoNumero
+            // 7 para cobrança registrada
+            // 13 para cobrança sem registro
+            return Utils.FormatCode(boleto.NossoNumero, 13);
+        }
     }
 }

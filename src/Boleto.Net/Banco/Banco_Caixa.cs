@@ -344,18 +344,22 @@ namespace BoletoNet
             boleto.CodigoBarra.LinhaDigitavel = Grupo1 + Grupo2 + Grupo3 + Grupo4 + Grupo5;
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
-            if (boleto.Carteira.Equals("SR"))
+            return string.Format("{0}-{1}", boleto.NossoNumero, Mod11Base9(boleto.NossoNumero)); //
+            //boleto.NossoNumero = string.Format("{0}{1}/{2}-{3}", boleto.Carteira, EMISSAO_CEDENTE, boleto.NossoNumero, Mod11Base9(boleto.Carteira + EMISSAO_CEDENTE + boleto.NossoNumero));
+        }
+
+        public override long GerarNossoNumero(DadosGeracaoNossoNumero dados)
+        {
+            if (dados.Carteira.Equals("SR"))
             {
-                if (boleto.NossoNumero.Length == 14)
+                if (dados.NossoNumero.Length == 14)
                 {
-                    boleto.NossoNumero = "8" + boleto.NossoNumero;
+                    return long.Parse("8" + dados.NossoNumero);
                 }
             }
-
-            boleto.NossoNumero = string.Format("{0}-{1}", boleto.NossoNumero, Mod11Base9(boleto.NossoNumero)); //
-            //boleto.NossoNumero = string.Format("{0}{1}/{2}-{3}", boleto.Carteira, EMISSAO_CEDENTE, boleto.NossoNumero, Mod11Base9(boleto.Carteira + EMISSAO_CEDENTE + boleto.NossoNumero));
+            return dados.Sequencial;
         }
 
         public override void FormataNumeroDocumento(Boleto boleto)
@@ -387,9 +391,6 @@ namespace BoletoNet
             }
             else
             {
-                if(Convert.ToInt64(boleto.NossoNumero).ToString().Length < 10)
-                    boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 10);
-
                 if (boleto.NossoNumero.Length != 10)
                     throw new Exception(
                         "Nosso Número inválido, Para Caixa Econômica carteira indefinida, o Nosso Número deve conter 10 caracteres.");
@@ -429,7 +430,6 @@ namespace BoletoNet
             {
                 FormataCodigoBarra(boleto);
                 FormataLinhaDigitavel(boleto);
-                FormataNossoNumero(boleto);
             }
         }
 
@@ -741,8 +741,6 @@ namespace BoletoNet
                     vMsg += String.Concat("Para o Tipo Documento [1 - SIGCB - COM REGISTRO], o CEP do SACADO é Obrigatório!", Environment.NewLine);
                     vRetorno = false;
                 }
-                if (boleto.NossoNumero.Length > 15)
-                    boleto.NossoNumero = boleto.NossoNumero.Substring(0, 15);
                 //if (!boleto.Remessa.TipoDocumento.Equals("2")) //2 - SIGCB - SEM REGISTRO
                 //{
                 //    //Para o "Remessa.TipoDocumento = "2", não poderá ter NossoNumero Gerado!

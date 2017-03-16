@@ -165,7 +165,6 @@ namespace BoletoNet.Arquivo
             b.ValorBoleto = Convert.ToDecimal(2469.69);
             b.Carteira = "1";
             b.VariacaoCarteira = "02";
-            b.NossoNumero = string.Empty; //"92082835"; //** Para o "Remessa.TipoDocumento = "06", não poderá ter NossoNúmero Gerado!
             b.NumeroDocumento = "1008073";
             //
             b.Sacado = new Sacado("000.000.000-00", "Fulano de Silva");
@@ -215,7 +214,6 @@ namespace BoletoNet.Arquivo
             b.ValorBoleto = Convert.ToDecimal(2469.69);
             b.Carteira = "1";
             b.VariacaoCarteira = "02";
-            b.NossoNumero = string.Empty; //"92082835"; //** Para o "Remessa.TipoDocumento = "06", não poderá ter NossoNúmero Gerado!
             b.NumeroDocumento = "1008073";
             //
             b.Sacado = new Sacado("000.000.000-00", "Fulano de Silva");
@@ -307,7 +305,6 @@ namespace BoletoNet.Arquivo
             b.DataVencimento = DateTime.Now.AddDays(15);
             b.ValorBoleto = Convert.ToDecimal(2469.69);
             b.Carteira = "SR";
-            b.NossoNumero = "92082835";
             b.NumeroDocumento = "1008073";
             EspecieDocumento ED = new EspecieDocumento(104);
             b.EspecieDocumento = ED;
@@ -358,7 +355,6 @@ namespace BoletoNet.Arquivo
             b.DataVencimento = DateTime.Now.AddDays(15);
             b.ValorBoleto = Convert.ToDecimal(1);
             b.Carteira = "4";
-            b.NossoNumero = "7777777";
             b.NumeroDocumento = "2525";
             //
             b.Sacado = new Sacado("000.000.000-00", "Fulano de Silva");

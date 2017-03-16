@@ -104,7 +104,6 @@ namespace BoletoNet
 
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);
-            FormataNossoNumero(boleto);
         }
 
         public override void FormataNumeroDocumento(Boleto boleto)
@@ -112,9 +111,9 @@ namespace BoletoNet
             throw new NotImplementedException("Função não implementada.");
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
-            //throw new NotImplementedException("Função não implementada.");
+            throw new NotImplementedException("Função não implementada.");
         }
 
         /// <summary>

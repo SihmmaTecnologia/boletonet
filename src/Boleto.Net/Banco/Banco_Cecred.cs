@@ -94,8 +94,8 @@ namespace BoletoNet {
 
         }
 
-        void IBanco.FormataNossoNumero(Boleto boleto) {
-            boleto.NossoNumero = GetFormatedNossoNumero(boleto);
+        public string FormatarNossoNumero(Boleto boleto) {
+            return GetFormatedNossoNumero(boleto);
         }
 
         void IBanco.FormataNumeroDocumento(Boleto boleto) {

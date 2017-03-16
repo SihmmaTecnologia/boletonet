@@ -184,19 +184,7 @@ namespace BoletoNet
 				throw new Exception("Erro durante a formatação da linha digitável.", ex);
 			}
 		}
-
-		public override void FormataNossoNumero(Boleto boleto)
-		{
-			try
-			{
-				_IBanco.FormataNossoNumero(boleto);
-			}
-			catch (Exception ex)
-			{
-				throw new Exception("Erro durante a formatação do nosso número.", ex);
-			}
-		}
-
+        
 		public override void FormataNumeroDocumento(Boleto boleto)
 		{
 			try
@@ -221,10 +209,15 @@ namespace BoletoNet
 			//}
 		}
 
-		#endregion
+        public override long GerarNossoNumero(DadosGeracaoNossoNumero dados)
+        {
+            return _IBanco.GerarNossoNumero(dados);
+        }
 
-		#region Métodos de Validação de geração de arquivo
-		public override bool ValidarRemessa(TipoArquivo tipoArquivo, string numeroConvenio, IBanco banco, Cedente cedente, Boletos boletos, int numeroArquivoRemessa, out string mensagem)
+        #endregion
+
+        #region Métodos de Validação de geração de arquivo
+        public override bool ValidarRemessa(TipoArquivo tipoArquivo, string numeroConvenio, IBanco banco, Cedente cedente, Boletos boletos, int numeroArquivoRemessa, out string mensagem)
 		{
 			try
 			{
@@ -535,6 +528,11 @@ namespace BoletoNet
         public override long ObterNossoNumeroSemConvenioOuDigitoVerificador(long convenio, string nossoNumero)
         {
             return _IBanco.ObterNossoNumeroSemConvenioOuDigitoVerificador(convenio, nossoNumero);
+        }
+
+        public string FormatarNossoNumero(Boleto boleto)
+        {
+            return _IBanco.FormatarNossoNumero(boleto);
         }
 
         #endregion Métodos de Leitura do arquivo de Retorno

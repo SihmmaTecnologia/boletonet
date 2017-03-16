@@ -139,7 +139,6 @@ namespace BoletoNet.Testes
             objBOLETO.DataVencimento = DateTime.Now.AddDays(10);
             objBOLETO.ValorBoleto = 90;
             objBOLETO.Carteira ="09";
-            objBOLETO.NossoNumero = ("00000012345");
             objBOLETO.Cedente = objCEDENTE;
             //O n� do documento deve ser de 10 posi��es
             objBOLETO.NumeroDocumento = "1234567890";

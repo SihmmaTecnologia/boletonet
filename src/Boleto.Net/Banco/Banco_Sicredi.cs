@@ -46,11 +46,6 @@ namespace BoletoNet
                 boleto.LocalPagamento += Nome;
             else boleto.LocalPagamento = "PAGÁVEL PREFERENCIALMENTE NAS COOPERATIVAS DE CRÉDITO DO SICREDI";
 
-            //Verifica se o nosso número é válido
-            string digitoVerificadorNossoNumro;
-            boleto.NossoNumero = GerarNossoNumero(boleto.Cedente.Codigo, boleto.NossoNumero, out digitoVerificadorNossoNumro);
-            boleto.DigitoNossoNumero = digitoVerificadorNossoNumro;
-
             //Verifica se data do processamento é valida
             if (boleto.DataProcessamento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
                 boleto.DataProcessamento = DateTime.Now;
@@ -134,10 +129,10 @@ namespace BoletoNet
             return false;
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
             string nossoNumero = boleto.NossoNumero;            
-            boleto.NossoNumero = string.Format("{0}/{1}-{2}", nossoNumero.Substring(0, 2), nossoNumero.Substring(2, 6), nossoNumero.Substring(8));
+            return string.Format("{0}/{1}-{2}", nossoNumero.Substring(0, 2), nossoNumero.Substring(2, 6), nossoNumero.Substring(8));
         }
 
         public override void FormataNumeroDocumento(Boleto boleto)
@@ -840,10 +835,10 @@ namespace BoletoNet
                 #region Nosso Número + DV
 
                 string digitoVerificadorNossoNumro;
-                boleto.NossoNumero = GerarNossoNumero(boleto.Cedente.Codigo, boleto.NossoNumero, out digitoVerificadorNossoNumro);
+                var nossoNumero = GerarNossoNumero(boleto.Cedente.Codigo, boleto.NossoNumero, out digitoVerificadorNossoNumro);
                 boleto.DigitoNossoNumero = digitoVerificadorNossoNumro;
                 
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0048, 009, 0, boleto.NossoNumero, '0'));                        //048-056
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0048, 009, 0, nossoNumero, '0'));                               //048-056
                 #endregion
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0057, 006, 0, string.Empty, ' '));                              //057-062
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediDataAAAAMMDD_________, 0063, 008, 0, boleto.DataProcessamento, ' '));                  //063-070
@@ -1113,6 +1108,13 @@ namespace BoletoNet
                 }
             }
             throw new BoletoNetException("Nosso número é inválido!");
+        }
+        
+        public override long GerarNossoNumero(DadosGeracaoNossoNumero dados)
+        {
+            string digVerificador;
+            var nossoNumero = GerarNossoNumero(dados.Cedente.Codigo, dados.Sequencial.ToString(), out digVerificador);
+            return long.Parse(nossoNumero);
         }
     }
 }

@@ -37,7 +37,6 @@ namespace Boleto.Net.Testes.BancoBrasil
         public void BancoDoBrasil_Carteira_18_NossoNumero()
         {
             boletoBancario.Cedente.Convenio = 1653;
-            boletoBancario.Boleto.NossoNumero = "1002852";
 
             boletoBancario.Boleto.Valida();
 

@@ -29,7 +29,7 @@ namespace Boleto.Net.Testes.BancoSicredi
             BoletoBancario boletoBancario = GerarBoleto();
             boletoBancario.Boleto.Valida();
 
-            boletoBancario.Banco.FormataNossoNumero(boletoBancario.Boleto);
+            boletoBancario.Banco.FormatarNossoNumero(boletoBancario.Boleto);
         }
 
         #region Gerar remessa

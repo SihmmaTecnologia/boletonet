@@ -43,10 +43,6 @@ namespace BoletoNet
             if (boleto.Cedente.ContaBancaria.Conta.Length < 7)
                 boleto.Cedente.ContaBancaria.Conta = Utils.FormatCode(boleto.Cedente.ContaBancaria.Conta, 7);
 
-            //Formata o tamanho do número de nosso número
-            if (boleto.NossoNumero.Length < 13)
-                boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 13);
-
             // Calcula o DAC do Nosso Número
             _dacNossoNumero = CalcularDigitoNossoNumero(boleto);
 
@@ -73,12 +69,11 @@ namespace BoletoNet
 
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);
-            FormataNossoNumero(boleto);
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
-            //throw new NotImplementedException("Função do fomata nosso número não implementada.");
+            throw new NotImplementedException("Função do fomata nosso número não implementada.");
         }
 
         public override void FormataNumeroDocumento(Boleto boleto)

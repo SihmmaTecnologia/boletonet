@@ -38,14 +38,9 @@ namespace BoletoNet
 
 		#region Public Methods and Operators
 
-		public override void FormataNossoNumero(Boleto boleto)
+		public string FormatarNossoNumero(Boleto boleto)
 		{
-			if (boleto.NossoNumero.Length > 12)
-			{
-				throw new TamanhoNossoNumeroInvalidoException(12);
-			}
-
-			base.FormataNossoNumero(boleto);
+			return base.FormatarNossoNumero(boleto);
 		}
 
 		public override string GerarDetalheRemessa(Boleto boleto, int numeroRegistro, TipoArquivo tipoArquivo)

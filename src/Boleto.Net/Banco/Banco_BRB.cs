@@ -81,9 +81,9 @@ namespace BoletoNet
             boleto.CodigoBarra.LinhaDigitavel = Grupo1 + Grupo2 + Grupo3 + Grupo4;
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
-            boleto.NossoNumero = string.Format("{0}{1}{2}", boleto.Categoria, boleto.NossoNumero, Utils.FormatCode(Codigo.ToString(), 3) + boleto.CodigoBarra.Chave.Substring(23, 2));
+            return string.Format("{0}{1}{2}", boleto.Categoria, boleto.NossoNumero, Utils.FormatCode(Codigo.ToString(), 3) + boleto.CodigoBarra.Chave.Substring(23, 2));
         }
 
         public override void FormataNumeroDocumento(Boleto boleto)
@@ -100,8 +100,6 @@ namespace BoletoNet
             //Verifica se o tamanho para o NossoNumero são 12 dígitos
             if (Convert.ToInt32(boleto.NossoNumero).ToString().Length > 6)
                 throw new NotImplementedException("A quantidade de dígitos do nosso número para a carteira " + boleto.Carteira + ", são 6 números.");
-            else if (Convert.ToInt32(boleto.NossoNumero).ToString().Length < 6)
-                boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 6);
 
             if (boleto.Carteira != "COB")
                 throw new NotImplementedException("Carteira não implementada. Utilize a carteira COB.");
@@ -122,7 +120,6 @@ namespace BoletoNet
             FormataChave(boleto);
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);
-            FormataNossoNumero(boleto);
             FormataNumeroDocumento(boleto);
         }
 

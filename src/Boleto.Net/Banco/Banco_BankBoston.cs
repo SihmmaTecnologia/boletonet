@@ -78,7 +78,7 @@ namespace BoletoNet
             }
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
             try
             {
@@ -388,6 +388,5 @@ namespace BoletoNet
             mensagem = vMsg;
             return vRetorno;
         }
-
     }
 }

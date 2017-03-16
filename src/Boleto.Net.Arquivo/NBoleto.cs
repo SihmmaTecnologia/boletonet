@@ -532,7 +532,6 @@ namespace BoletoNet.Arquivo
                 b.DataVencimento = DateTime.Now.AddDays(15);
                 b.ValorBoleto = Convert.ToDecimal(1);
                 b.Carteira = "4";
-                b.NossoNumero = "7777777";
                 b.NumeroDocumento = "2525";
                 //
                 b.Sacado = new Sacado("000.000.000-00", "Fulano de Silva");

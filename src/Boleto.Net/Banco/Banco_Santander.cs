@@ -181,9 +181,9 @@ namespace BoletoNet
             boleto.CodigoBarra.LinhaDigitavel = string.Format("{0}{1}{2}{3}{4}", grupo1, grupo2, grupo3, grupo4, grupo5);
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
-            boleto.NossoNumero = string.Format("{0}-{1}", boleto.NossoNumero, Mod11Santander(boleto.NossoNumero, 9));
+            return string.Format("{0}-{1}", boleto.NossoNumero, Mod11Santander(boleto.NossoNumero, 9));
         }
 
         public override void FormataNumeroDocumento(Boleto boleto)
@@ -216,9 +216,6 @@ namespace BoletoNet
 
             if (this.Codigo == 33)
             {
-                if (boleto.NossoNumero.Length < 12 && (boleto.Carteira.Equals("101") || boleto.Carteira.Equals("102")))
-                    boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, "0", 12, true);
-
                 if (boleto.NossoNumero.Length != 12)
                     throw new NotSupportedException("Nosso Número deve ter 12 posições para o banco 033.");
             }

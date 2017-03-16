@@ -133,9 +133,9 @@ namespace BoletoNet
         }
 
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
-            boleto.NossoNumero = string.Format("{0:0000}{1}", boleto.Cedente.Codigo, boleto.NumeroDocumento);
+            return string.Format("{0:0000}{1}", boleto.Cedente.Codigo, boleto.NumeroDocumento);
         }
 
 
@@ -150,8 +150,6 @@ namespace BoletoNet
             //Verifica se o tamanho para o NossoNumero são 10 dígitos
             if (boleto.NossoNumero.Length > 10)
                 throw new NotImplementedException("A quantidade de dígitos do nosso número para a carteira " + boleto.Carteira + ", são 10 números.");
-            else if (boleto.NossoNumero.Length < 10)
-                boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 10);
 
             if (boleto.Carteira != "CNR")
                 throw new NotImplementedException("Carteira não implementada. Utilize a carteira CNR.");
@@ -170,8 +168,6 @@ namespace BoletoNet
 			if (boleto.DataDocumento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
                 boleto.DataDocumento = DateTime.Now;
 
-
-            FormataNossoNumero(boleto);
             FormataNumeroDocumento(boleto);
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);

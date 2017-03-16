@@ -55,7 +55,6 @@ namespace BoletoNet
 
             boleto.QuantidadeMoeda = 0;
 
-            boleto.NossoNumero = boleto.NossoNumero.PadLeft(7, '0');
             boleto.Cedente.ContaBancaria.Agencia = Utils.FormatCode(boleto.Cedente.ContaBancaria.Agencia, 4);
             boleto.Cedente.ContaBancaria.Conta = Utils.FormatCode(boleto.Cedente.ContaBancaria.Conta, 7);
             boleto.Cedente.ContaBancaria.DigitoConta = Utils.FormatCode(boleto.Cedente.ContaBancaria.DigitoConta, 1);
@@ -68,7 +67,6 @@ namespace BoletoNet
 
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);
-            FormataNossoNumero(boleto);
         }
 
         # endregion
@@ -176,9 +174,9 @@ namespace BoletoNet
             boleto.CodigoBarra.LinhaDigitavel = campo1 + " " + campo2 + " " + campo3 + " " + campo4 + " " + campo5;
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
-            boleto.NossoNumero = string.Format("{0}-{1}", Utils.FormatCode(boleto.NossoNumero, 7), boleto.DigitoNossoNumero);
+            return string.Format("{0}-{1}", Utils.FormatCode(boleto.NossoNumero, 7), boleto.DigitoNossoNumero);
 
         }
 

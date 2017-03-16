@@ -40,12 +40,8 @@ namespace BoletoNet
                 boleto.Cedente.ContaBancaria.Conta = Utils.FormatCode(boleto.Cedente.ContaBancaria.Conta, 7);
 
             //Formata o tamanho do número de nosso número
-            if (boleto.NossoNumero.Length < 8)
-                boleto.NossoNumero = Utils.FormatCode(boleto.NossoNumero, 8);
-            else if (boleto.NossoNumero.Length > 8)
+            if (boleto.NossoNumero.Length > 8)
                 throw new NotSupportedException("Para o banco Banrisul, o nosso número deve ter 08 posições e 02 dígitos verificadores (calculados automaticamente).");
-
-            boleto.NossoNumero = CalcularNCNossoNumero(boleto.NossoNumero);
 
             //Atribui o nome do banco ao local de pagamento
             if (boleto.LocalPagamento == "Até o vencimento, preferencialmente no ")
@@ -61,14 +57,14 @@ namespace BoletoNet
 
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);
-            FormataNossoNumero(boleto);
         }
 
-        private string CalcularNCNossoNumero(String nossoNumero)
+        public override long GerarNossoNumero(DadosGeracaoNossoNumero dados)
         {
+            var nossoNumero = Utils.FormatCode(dados.Sequencial.ToString(), 8);
             int dv1 = Mod10Banri(nossoNumero);
             int dv1e2 = Mod11Banri(nossoNumero, dv1); // O módulo 11 sempre devolve os dois Dígitos, pois, as vezes o dígito calculado no mod10 será incrementado em 1
-            return nossoNumero + dv1e2.ToString("00");
+            return long.Parse(nossoNumero + dv1e2.ToString("00"));
         }
 
         private string CalcularNCCodBarras(String seq)
@@ -78,11 +74,11 @@ namespace BoletoNet
             return dv2.ToString("00");
         }
 
-        public override void FormataNossoNumero(Boleto boleto)
+        public string FormatarNossoNumero(Boleto boleto)
         {
             if (boleto.NossoNumero.Length == 10)
             {
-                boleto.NossoNumero = boleto.NossoNumero.Substring(0, 8) + "-" + boleto.NossoNumero.Substring(8, 2);
+                return boleto.NossoNumero.Substring(0, 8) + "-" + boleto.NossoNumero.Substring(8, 2);
             }
             else
             {
