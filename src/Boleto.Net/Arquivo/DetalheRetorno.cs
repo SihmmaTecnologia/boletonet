@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace BoletoNet
 {
@@ -466,6 +468,8 @@ namespace BoletoNet
                 _valorMulta = value;
             }
         }
+
+        public IEnumerable<MotivosOcorrencia> MotivosOcorrencia { get; set; }
 
         #endregion
 

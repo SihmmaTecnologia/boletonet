@@ -148,5 +148,7 @@ namespace BoletoNet
         /// Formata o nosso número
         /// </summary>
         string FormatarNossoNumero(Boleto boleto);
+
+        MotivosOcorrencia ObterMotivoOcorrencia(string motivo);
     }
 }

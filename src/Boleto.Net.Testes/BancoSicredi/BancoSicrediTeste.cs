@@ -22,7 +22,7 @@ namespace Boleto.Net.Testes.BancoSicredi
             var nossoNumero = banco.ObterNossoNumeroSemConvenioOuDigitoVerificador(0, "162004775");
             Assert.AreEqual(477, nossoNumero);
         }
-
+        
         [TestMethod]
         public void BancoSicredi_ValidarBoleto()
         {

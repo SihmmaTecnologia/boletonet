@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using BoletoNet.Util;
 using BoletoNet.Enums;
+using System.Collections.Generic;
 
 namespace BoletoNet
 {
@@ -770,6 +771,11 @@ namespace BoletoNet
         }
 
         public virtual long GerarNossoNumero(DadosGeracaoNossoNumero dados)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public virtual MotivosOcorrencia ObterMotivoOcorrencia(string motivo)
         {
             throw new NotImplementedException();
         }

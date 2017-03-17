@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace BoletoNet
@@ -533,6 +534,11 @@ namespace BoletoNet
         public string FormatarNossoNumero(Boleto boleto)
         {
             return _IBanco.FormatarNossoNumero(boleto);
+        }
+
+        public override MotivosOcorrencia ObterMotivoOcorrencia(string motivo)
+        {
+            return _IBanco.ObterMotivoOcorrencia(motivo);
         }
 
         #endregion Métodos de Leitura do arquivo de Retorno
