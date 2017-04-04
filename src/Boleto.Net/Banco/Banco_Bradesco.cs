@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.UI;
 using BoletoNet;
 using BoletoNet.Util;
+using System.Linq;
 
 [assembly: WebResource("BoletoNet.Imagens.237.jpg", "image/jpg")]
 
@@ -208,7 +209,9 @@ namespace BoletoNet
 
         public string FormatarNossoNumero(Boleto boleto)
         {
-            return string.Format("{0}/{1}-{2}", Utils.FormatCode(boleto.Carteira, 3), boleto.NossoNumero, boleto.DigitoNossoNumero);
+            var nossoNumero = boleto.NossoNumero.Substring(boleto.NossoNumero.Length - 1);
+            var digVerificador = boleto.NossoNumero.Last();
+            return string.Format("{0}/{1}-{2}", Utils.FormatCode(boleto.Carteira, 3), nossoNumero, digVerificador);
         }
         public override string GerarHeaderRemessa(string numeroConvenio, Cedente cedente, TipoArquivo tipoArquivo, int numeroArquivoRemessa, Boleto boletos)
         {
@@ -270,11 +273,6 @@ namespace BoletoNet
             // Atribui o nome do banco ao local de pagamento
             if (string.IsNullOrEmpty(boleto.LocalPagamento))
                 boleto.LocalPagamento = "PAGÁVEL PREFERENCIALMENTE NAS AGÊNCIAS DO BRADESCO";
-
-
-            // Calcula o DAC do Nosso Número
-            _dacNossoNumero = CalcularDigitoNossoNumero(boleto);
-            boleto.DigitoNossoNumero = _dacNossoNumero;
             
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);

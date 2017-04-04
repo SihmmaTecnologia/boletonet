@@ -300,15 +300,6 @@ namespace BoletoNet
 		}
 
 		/// <summary> 
-		/// Recupara o digito nosso número 
-		/// </summary>        
-		public string DigitoNossoNumero
-		{
-			get { return this._digitoNossoNumero; }
-			set { this._digitoNossoNumero = value; }
-		}
-
-		/// <summary> 
 		/// Recupara o nosso número 
 		/// </summary>        
 		public string NossoNumero

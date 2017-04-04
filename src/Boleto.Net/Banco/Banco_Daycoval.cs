@@ -242,17 +242,15 @@ namespace BoletoNet
 
 				// Número do documento interno
 			detalhe.Append(Utils.FitStringLength("0", 8, 8, '0', 0, true, true, true)); // Nosso número
-			detalhe.Append(Utils.FitStringLength(boleto.NossoNumero, 12, 12, '0', 0, true, true, true));
+			detalhe.Append(Utils.FitStringLength(boleto.NossoNumero, 13, 13, '0', 0, true, true, true));
 
-				// Nosso número do correspondente, mesmo do boleto
-			if (this._banco == null)
+                // Nosso número do correspondente, mesmo do boleto
+            if (this._banco == null)
 			{
 				this._banco = boleto.Banco;
 			}
 
 			this._banco.ValidaBoleto(boleto);
-
-			detalhe.Append(boleto.DigitoNossoNumero);
 
 			detalhe.Append(Utils.FitStringLength(string.Empty, 24, 24, ' ', 0, true, true, false)); // Uso do banco
 			detalhe.Append("4"); // TODO: Código de remessa

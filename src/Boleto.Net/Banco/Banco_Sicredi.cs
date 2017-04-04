@@ -835,7 +835,6 @@ namespace BoletoNet
 
                 string digitoVerificadorNossoNumro;
                 var nossoNumero = GerarNossoNumero(boleto.Cedente.Codigo, boleto.NossoNumero, out digitoVerificadorNossoNumro);
-                boleto.DigitoNossoNumero = digitoVerificadorNossoNumro;
 
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0048, 009, 0, nossoNumero, '0'));                               //048-056
                 #endregion

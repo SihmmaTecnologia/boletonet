@@ -241,7 +241,7 @@ namespace BoletoNet
 			detalhe.Append(Utils.FitStringLength(string.Empty, 8, 8, '0', 0, true, true, true));
 
 			// Nosso número do correspondente, mesmo do boleto
-			detalhe.Append(Utils.FitStringLength(boleto.NossoNumero, 12, 12, '0', 0, true, true, true));
+			detalhe.Append(Utils.FitStringLength(boleto.NossoNumero, 13, 13, '0', 0, true, true, true));
 
 			// Nosso número do correspondente, mesmo do boleto
 			if (this._banco == null)
@@ -250,8 +250,6 @@ namespace BoletoNet
 			}
 
 			this._banco.ValidaBoleto(boleto);
-
-			detalhe.Append(boleto.DigitoNossoNumero);
 
 			// Uso do banco
 			detalhe.Append(Utils.FitStringLength(string.Empty, 24, 24, ' ', 0, true, true, false)); 

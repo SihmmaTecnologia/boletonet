@@ -59,12 +59,6 @@ namespace BoletoNet
             boleto.Cedente.ContaBancaria.Conta = Utils.FormatCode(boleto.Cedente.ContaBancaria.Conta, 7);
             boleto.Cedente.ContaBancaria.DigitoConta = Utils.FormatCode(boleto.Cedente.ContaBancaria.DigitoConta, 1);
 
-            if (string.IsNullOrEmpty(boleto.DigitoNossoNumero))
-                boleto.DigitoNossoNumero = Mod11(boleto.NossoNumero, 8).ToString();
-
-            boleto.DigitoNossoNumero = Utils.FormatCode(boleto.DigitoNossoNumero, 1);
-
-
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);
         }
@@ -76,12 +70,11 @@ namespace BoletoNet
         private string CampoLivre(Boleto boleto)
         {
             string CampoZerado = "000";
-            string campoLivre = string.Format("{0}{1}{2}{3}{4}{5}{6}"
+            string campoLivre = string.Format("{0}{1}{2}{3}{4}{5}"
                 , Utils.FormatCode(boleto.Cedente.ContaBancaria.Agencia, 4)
                 , Utils.FormatCode(boleto.Cedente.ContaBancaria.Conta, 7)
                 , Utils.FormatCode(boleto.Cedente.ContaBancaria.DigitoConta, 1)
-                , Utils.FormatCode(boleto.NossoNumero, 7)
-                , Utils.FormatCode(boleto.DigitoNossoNumero, 1)
+                , Utils.FormatCode(boleto.NossoNumero, 8)
                 , FormataCarteira(boleto.Carteira)
                 , CampoZerado);
             return campoLivre;
@@ -176,7 +169,8 @@ namespace BoletoNet
 
         public string FormatarNossoNumero(Boleto boleto)
         {
-            return string.Format("{0}-{1}", Utils.FormatCode(boleto.NossoNumero, 7), boleto.DigitoNossoNumero);
+            var nossoNumero = Utils.FormatCode(boleto.NossoNumero, 8);
+            return string.Format("{0}-{1}", nossoNumero.Substring(0, 7), nossoNumero.Substring(7));
 
         }
 

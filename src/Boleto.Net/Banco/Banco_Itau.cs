@@ -1,6 +1,7 @@
 using BoletoNet.Excecoes;
 using BoletoNet.Util;
 using System;
+using System.Linq;
 using System.Text;
 using System.Web.UI;
 
@@ -16,7 +17,6 @@ namespace BoletoNet
         #region Variáveis
 
         private int _dacBoleto = 0;
-        private int _dacNossoNumero = 0;
 
         #endregion
 
@@ -92,21 +92,6 @@ namespace BoletoNet
                 // Calcula o DAC da Conta Corrente
                 boleto.Cedente.ContaBancaria.DigitoConta = Mod10(boleto.Cedente.ContaBancaria.Agencia + boleto.Cedente.ContaBancaria.Conta).ToString();
 
-                // Calcula o DAC do Nosso Número a maioria das carteiras
-                // agencia/conta/carteira/nosso numero
-                if (boleto.Carteira == "112")
-                    _dacNossoNumero = Mod10(boleto.Cedente.ContaBancaria.Agencia + boleto.Cedente.ContaBancaria.Conta + boleto.Cedente.ContaBancaria.DigitoConta + boleto.Carteira + boleto.NossoNumero);
-                else if (boleto.Carteira != "126" && boleto.Carteira != "131"
-                    && boleto.Carteira != "146" && boleto.Carteira != "150"
-                    && boleto.Carteira != "168")
-                    _dacNossoNumero = Mod10(boleto.Cedente.ContaBancaria.Agencia + boleto.Cedente.ContaBancaria.Conta + boleto.Carteira + boleto.NossoNumero);
-                else
-                    // Excessão 126 - 131 - 146 - 150 - 168
-                    // carteira/nosso numero
-                    _dacNossoNumero = Mod10(boleto.Carteira + boleto.NossoNumero);
-
-                boleto.DigitoNossoNumero = _dacNossoNumero.ToString();
-
                 //Atribui o nome do banco ao local de pagamento
                 if (string.IsNullOrEmpty(boleto.LocalPagamento))
                     boleto.LocalPagamento = "PAGÁVEL PREFERENCIALMENTE NAS AGÊNCIAS DO ITAÚ";
@@ -153,9 +138,9 @@ namespace BoletoNet
                 if (boleto.Carteira == "175" || boleto.Carteira == "176" || boleto.Carteira == "178" || boleto.Carteira == "109" || boleto.Carteira == "121" || boleto.Carteira == "112")//MarcielTorres - adicionado a carteira 112
                 {
                     boleto.CodigoBarra.Codigo =
-                        string.Format("{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}000", Codigo, boleto.Moeda,
+                        string.Format("{0}{1}{2}{3}{4}{5}{6}{7}{8}000", Codigo, boleto.Moeda,
                                       FatorVencimento(boleto), valorBoleto, boleto.Carteira,
-                                      boleto.NossoNumero, _dacNossoNumero, boleto.Cedente.ContaBancaria.Agencia,//Flavio(fhlviana@hotmail.com) => Cedente.ContaBancaria.Agencia --> boleto.Cedente.ContaBancaria.Agencia
+                                      Utils.FormatCode(boleto.NossoNumero, 9), boleto.Cedente.ContaBancaria.Agencia,//Flavio(fhlviana@hotmail.com) => Cedente.ContaBancaria.Agencia --> boleto.Cedente.ContaBancaria.Agencia
                                       Utils.FormatCode(boleto.Cedente.ContaBancaria.Conta, 5), boleto.Cedente.ContaBancaria.DigitoConta);//Flavio(fhlviana@hotmail.com) => Cedente.ContaBancaria.DigitoConta --> boleto.Cedente.ContaBancaria.DigitoConta
                 }
                 else if (boleto.Carteira == "198" || boleto.Carteira == "107"
@@ -164,7 +149,7 @@ namespace BoletoNet
                 {
                     boleto.CodigoBarra.Codigo = string.Format("{0}{1}{2}{3}{4}{5}{6}{7}{8}0", Codigo, boleto.Moeda,
                         FatorVencimento(boleto), valorBoleto, boleto.Carteira,
-                        boleto.NossoNumero, numeroDocumento, codigoCedente,
+                        Utils.FormatCode(boleto.NossoNumero, 8), numeroDocumento, codigoCedente,
                         Mod10(boleto.Carteira + boleto.NossoNumero + numeroDocumento + codigoCedente));
                 }
 
@@ -185,15 +170,16 @@ namespace BoletoNet
                 string numeroDocumento = Utils.FormatCode(boleto.NumeroDocumento.ToString(), 7);
                 string codigoCedente = Utils.FormatCode(boleto.Cedente.Codigo.ToString(), 5);
                 string agencia = Utils.FormatCode(boleto.Cedente.ContaBancaria.Agencia, 4);
+                string nossoNumero = Utils.FormatCode(boleto.Cedente.ContaBancaria.Agencia, 9);
 
                 string AAA = Utils.FormatCode(Codigo.ToString(), 3);
                 string B = boleto.Moeda.ToString();
                 string CCC = boleto.Carteira.ToString();
-                string DD = boleto.NossoNumero.Substring(0, 2);
+                string DD = nossoNumero.Substring(0, 2);
                 string X = Mod10(AAA + B + CCC + DD).ToString();
                 string LD = string.Empty; //Linha Digitável
 
-                string DDDDDD = boleto.NossoNumero.Substring(2, 6);
+                string DDDDDD = nossoNumero.Substring(2, 6);
 
                 string K = string.Format(" {0} ", _dacBoleto);
 
@@ -258,7 +244,7 @@ namespace BoletoNet
 
                     #region DDDDD.DEFFFY
 
-                    string E = _dacNossoNumero.ToString();
+                    string E = nossoNumero.Last().ToString();
                     string FFF = agencia.Substring(0, 3);
                     string Y = Mod10(DDDDDD + E + FFF).ToString();
 
@@ -327,7 +313,7 @@ namespace BoletoNet
 
                     string EEE = numeroDocumento.Substring(4, 3);
                     string FFFFF = codigoCedente;
-                    string G = Mod10(boleto.Carteira + boleto.NossoNumero + numeroDocumento + codigoCedente).ToString();
+                    string G = Mod10(boleto.Carteira + nossoNumero.Substring(0, 8) + numeroDocumento + codigoCedente).ToString();
                     string H = "0";
                     string Z = Mod10(EEE + FFFFF + G + H).ToString();
                     C3 = string.Format("{0}{1}.{2}{3}{4}{5}", EEE, FFFFF.Substring(0, 2), FFFFF.Substring(2, 3), G, H, Z);
@@ -351,7 +337,8 @@ namespace BoletoNet
         {
             try
             {
-                return string.Format("{0}/{1}-{2}", boleto.Carteira, boleto.NossoNumero, _dacNossoNumero);
+                var numero = boleto.NossoNumero;
+                return string.Format("{0}/{1}-{2}", boleto.Carteira,  numero.Substring(0, numero.Count() - 1), numero.Substring(numero.Count() - 1));
             }
             catch (Exception ex)
             {
@@ -832,7 +819,7 @@ namespace BoletoNet
         public override string GerarDetalheSegmentoPRemessa(Boleto boleto, int numeroRegistro, string numeroConvenio)
         {
             try
-            {                
+            {
                 string _segmentoP;
                 _segmentoP = "341";
                 _segmentoP += "0001";
@@ -849,8 +836,7 @@ namespace BoletoNet
                 _segmentoP += " ";
                 _segmentoP += Utils.FormatCode(String.IsNullOrEmpty(boleto.Cedente.ContaBancaria.DigitoConta) ? " " : boleto.Cedente.ContaBancaria.DigitoConta, " ", 1, true);
                 _segmentoP += Utils.FitStringLength(boleto.Carteira, 3, 3, '0', 0, true, true, true);
-                _segmentoP += Utils.FitStringLength(boleto.NossoNumero, 8, 8, '0', 0, true, true, true);
-                _segmentoP += Utils.FitStringLength(boleto.DigitoNossoNumero, 1, 1, '0', 1, true, true, true);
+                _segmentoP += Utils.FitStringLength(boleto.NossoNumero, 9, 9, '0', 0, true, true, true);
                 _segmentoP += "        ";
                 _segmentoP += "00000";
                 _segmentoP += Utils.FitStringLength(boleto.NumeroDocumento, 10, 10, ' ', 0, true, true, false);
@@ -1731,6 +1717,35 @@ namespace BoletoNet
             if (long.TryParse(nossoNumero, out numero))
                 return numero;
             throw new NossoNumeroInvalidoException();
+        }
+
+        public override long GerarNossoNumero(DadosGeracaoNossoNumero dados)
+        {
+            int dac;
+            var nossoNumero = GerarNossoNumero(dados.Cedente.ContaBancaria, dados.Carteira, dados.NossoNumero, out dac);
+            return nossoNumero;
+        }
+        
+        private long GerarNossoNumero(ContaBancaria contaBancaria, string carteira, string sequencial, out int dac)
+        {
+            var carteirasEscrituraisModalidadeDireta = new string[]{ "126", "131", "145", "150", "168" };
+
+            var agencia = Utils.FormatCode(contaBancaria.Agencia, 4);
+            var conta = Utils.FormatCode(contaBancaria.Conta, 5);
+            var numero = Utils.FormatCode(sequencial, 8);
+
+            string baseDac;
+            if (carteira == "112")
+                baseDac = agencia + conta + contaBancaria.DigitoConta + carteira + numero;
+            else if (carteirasEscrituraisModalidadeDireta.Contains(carteira))
+                // Excessão 126 - 131 - 146 - 150 - 168
+                // carteira/nosso numero
+                baseDac = carteira + numero;
+            else
+                baseDac = agencia + conta + carteira + numero;
+
+            dac = Mod10(baseDac);
+            return long.Parse(string.Concat(numero, dac));
         }
     }
 }
