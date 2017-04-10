@@ -1728,15 +1728,20 @@ namespace BoletoNet
         
         private long GerarNossoNumero(ContaBancaria contaBancaria, string carteira, string sequencial, out int dac)
         {
-            var carteirasEscrituraisModalidadeDireta = new string[]{ "126", "131", "145", "150", "168" };
-
             var agencia = Utils.FormatCode(contaBancaria.Agencia, 4);
             var conta = Utils.FormatCode(contaBancaria.Conta, 5);
+
+            return GerarNossoNumero(agencia, conta, contaBancaria.DigitoConta, carteira, sequencial, out dac);
+        }
+
+        private long GerarNossoNumero(string agencia, string conta, string digConta, string carteira, string sequencial, out int dac)
+        {
             var numero = Utils.FormatCode(sequencial, 8);
 
+            var carteirasEscrituraisModalidadeDireta = new string[] { "126", "131", "145", "150", "168" };
             string baseDac;
             if (carteira == "112")
-                baseDac = agencia + conta + contaBancaria.DigitoConta + carteira + numero;
+                baseDac = agencia + conta + digConta + carteira + numero;
             else if (carteirasEscrituraisModalidadeDireta.Contains(carteira))
                 // Excessão 126 - 131 - 146 - 150 - 168
                 // carteira/nosso numero

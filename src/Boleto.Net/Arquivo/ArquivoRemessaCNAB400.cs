@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+using BoletoNet.Enums;
+using System.Linq;
 
 namespace BoletoNet
 {
@@ -81,19 +83,30 @@ namespace BoletoNet
                     // 341 - Banco Itau
                     if (banco.Codigo == 341)
                     {
-                        if (boleto.PercMulta > 0 || boleto.ValorMulta > 0)
+                        var ocorrencias = new string[] {
+                            TipoOcorrenciaRemessa.EntradaDeTitulos.Format(),
+                            TipoOcorrenciaRemessa.PedidoDeBaixa.Format()
+                        };
+
+                        if (!ocorrencias.Contains(boleto.Remessa.CodigoOcorrencia))
                         {
-                            Banco_Itau _banco = new Banco_Itau();
-                            strline = _banco.GerarRegistroDetalhe5(boleto, numeroRegistro);
-                            incluiLinha.WriteLine(strline);
-                            numeroRegistro++;
+                            if (boleto.PercMulta > 0 || boleto.ValorMulta > 0)
+                            {
+                                Banco_Itau _banco = new Banco_Itau();
+                                strline = _banco.GerarRegistroDetalhe5(boleto, numeroRegistro);
+                                incluiLinha.WriteLine(strline);
+                                numeroRegistro++;
+                            }
                         }
-                    }
+                    }                    
                     if ((boleto.Instrucoes != null && boleto.Instrucoes.Count > 0) || (boleto.Sacado.Instrucoes != null && boleto.Sacado.Instrucoes.Count > 0))
                     {
-                        strline = boleto.Banco.GerarMensagemVariavelRemessa(boleto, ref numeroRegistro, TipoArquivo.CNAB400);
-                        if (!string.IsNullOrEmpty(strline) && !string.IsNullOrWhiteSpace(strline))
-                            incluiLinha.WriteLine(strline);
+                        if (banco.Codigo != 341 || (banco.Codigo == 341 && boleto.Instrucoes.All(o => o.Codigo != 0)))
+                        {
+                            strline = boleto.Banco.GerarMensagemVariavelRemessa(boleto, ref numeroRegistro, TipoArquivo.CNAB400);
+                            if (!string.IsNullOrEmpty(strline) && !string.IsNullOrWhiteSpace(strline))
+                                incluiLinha.WriteLine(strline);
+                        }
                     }
                 }
 
