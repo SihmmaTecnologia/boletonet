@@ -25,8 +25,9 @@ namespace BoletoNet
             get { return _listaDetalhes; }
             set { _listaDetalhes = value; }
         }
+        public HeaderDeArquivoCNAB240 HeaderArquivo { get; set; }
         #endregion Propriedades
-        
+
         #region Construtores
 
         public ArquivoRetornoCNAB240()
@@ -73,6 +74,8 @@ namespace BoletoNet
                         {
                             case "0": //Header de arquivo
                                 OnLinhaLida(null, linha, EnumTipodeLinhaLida.HeaderDeArquivo);
+                                HeaderArquivo = new HeaderDeArquivoCNAB240();
+                                HeaderArquivo.LerHeaderDeArquivoCNAB240(linha);
                                 break;
                             case "1": //Header de lote
                                 OnLinhaLida(null, linha, EnumTipodeLinhaLida.HeaderDeLote);
