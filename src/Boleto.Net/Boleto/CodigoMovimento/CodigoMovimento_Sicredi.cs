@@ -92,7 +92,8 @@ namespace BoletoNet
             { EnumCodigoMovimento_Sicredi.AlteracaoRejeitada                                     ,TipoOcorrenciaRetorno.AlteracaoDeDadosRejeitada },
             { EnumCodigoMovimento_Sicredi.InstrucaoRejeitada                                     ,TipoOcorrenciaRetorno.InstrucaoRejeitada },
             { EnumCodigoMovimento_Sicredi.ConfirmacaoDePedidoDeAlteracaoDeOutrosDados            ,TipoOcorrenciaRetorno.ConfirmacaoDaAlteracaoDosDadosDoRateioDeCredito },
-            { EnumCodigoMovimento_Sicredi.RetiradoDeCartorioEManutencaoEmCarteira                ,TipoOcorrenciaRetorno.ConfirmacaoDoCancelamentoDosDadosDoRateioDeCredito }
+            { EnumCodigoMovimento_Sicredi.RetiradoDeCartorioEManutencaoEmCarteira                ,TipoOcorrenciaRetorno.ConfirmacaoDoCancelamentoDosDadosDoRateioDeCredito },
+            { EnumCodigoMovimento_Sicredi.BaixaRejeitada                                         ,TipoOcorrenciaRetorno.BaixaRejeitada }
         };
 
         private Dictionary<EnumCodigoMovimento_Sicredi, string> descricoes = new Dictionary<EnumCodigoMovimento_Sicredi, string>()
