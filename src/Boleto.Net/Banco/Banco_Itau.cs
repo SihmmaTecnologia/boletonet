@@ -1152,7 +1152,9 @@ namespace BoletoNet
                 _detalhe += "0000";
 
                 _detalhe += Utils.FitStringLength(boleto.NumeroDocumento, 25, 25, ' ', 0, true, true, false); //Identificação do título na empresa
-                _detalhe += Utils.FitStringLength(boleto.NossoNumero, 8, 8, '0', 0, true, true, true);
+
+                var nossoNumeroSemDV = boleto.NossoNumero.Substring(0, boleto.NossoNumero.Count() - 1);
+                _detalhe += Utils.FitStringLength(nossoNumeroSemDV, 8, 8, '0', 0, true, true, true);
                 // Quantidade de moeda variável - Preencher com zeros se a moeda for REAL
                 // O manual do Banco ITAÚ não diz como preencher caso a moeda não seja o REAL
                 if (boleto.Moeda == 9)
