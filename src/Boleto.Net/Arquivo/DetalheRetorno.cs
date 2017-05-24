@@ -469,7 +469,7 @@ namespace BoletoNet
             }
         }
 
-        public IEnumerable<MotivosOcorrencia> MotivosOcorrencia { get; set; }
+        public List<MotivosOcorrencia> MotivosOcorrencia { get; set; }
 
         #endregion
 

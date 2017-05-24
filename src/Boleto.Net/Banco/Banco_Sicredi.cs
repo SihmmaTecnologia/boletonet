@@ -1052,7 +1052,7 @@ namespace BoletoNet
                 #endregion
                 //
 
-                detalhe.MotivosOcorrencia = ObterMotivosOcorrencia(detalhe.MotivoCodigoOcorrencia);
+                detalhe.MotivosOcorrencia = ObterMotivosOcorrencia(detalhe.CodigoOcorrencia, detalhe.MotivoCodigoOcorrencia).ToList();
 
                 return detalhe;
             }
@@ -1062,13 +1062,18 @@ namespace BoletoNet
             }
         }
 
-        private IEnumerable<MotivosOcorrencia> ObterMotivosOcorrencia(string motivos)
+        private IEnumerable<MotivosOcorrencia> ObterMotivosOcorrencia(int tipoOcorrencia, string motivos)
         {
-            for (int i = 0; i < motivos.Length; i+=2)
+            Dictionary<string, string> dicionario;
+            if (!motivosPorTipoOcorrencia.TryGetValue(tipoOcorrencia, out dicionario))
+            {
+                dicionario = motivosOcorrencia;
+            }
+            for (int i = 0; i < motivos.Length; i += 2)
             {
                 var codigo = motivos.Substring(i, 2);
                 string descricao;
-                if (!string.IsNullOrEmpty(codigo) && motivosOcorrencia.TryGetValue(codigo, out descricao))
+                if (!string.IsNullOrEmpty(codigo) && dicionario.TryGetValue(codigo, out descricao))
                     yield return new MotivosOcorrencia(codigo, descricao);
             }
         }
@@ -1139,6 +1144,22 @@ namespace BoletoNet
             var nossoNumero = GerarNossoNumero(dados.Cedente.Codigo, dados.Sequencial.ToString(), out digVerificador);
             return long.Parse(nossoNumero);
         }
+
+        private static Dictionary<int, Dictionary<string, string>> motivosPorTipoOcorrencia = new Dictionary<int, Dictionary<string, string>>()
+        {
+            { 28,
+                new Dictionary<string, string>
+                {
+                    { "03", "Tarifa de sustação" },
+                    { "04", "Tarifa de protesto" },
+                    { "08", "Tarifa de custas de protesto" },
+                    { "A9", "Tarifa de manutenção de título vencido" },
+                    { "B1", "Tarifa de baixa da carteira" },
+                    { "B3", "Tarifa de registro de entrada do título" },
+                    { "F5", "Tarifa de entrada na rede Sicredi" }
+                }
+            }
+        };
 
         private static Dictionary<string, string> motivosOcorrencia = new Dictionary<string, string>() {
             { "01", "Código do banco inválido" },
