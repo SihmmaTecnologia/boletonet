@@ -73,12 +73,12 @@ namespace BoletoNet
         {
             throw new NotImplementedException("Função não implementada");
         }
-        
+
         public virtual bool ValidarRemessa(TipoArquivo tipoArquivo, string numeroConvenio, IBanco banco, Cedente cedente, Boletos boletos, int numeroArquivoRemessa, out string mensagem)
         {
             throw new NotImplementedException("Função não implementada na classe filha. Implemente na classe que está sendo criada.");
         }
-        
+
         /// <summary>
         /// Gera os registros de header do aquivo de remessa
         /// </summary>
@@ -603,7 +603,7 @@ namespace BoletoNet
 
             for (int i = seq.Length; i > 0; i--)
             {
-                s = s + (Convert.ToInt32(seq.Mid( i, 1)) * p);
+                s = s + (Convert.ToInt32(seq.Mid(i, 1)) * p);
                 if (p == b)
                     p = 2;
                 else
@@ -676,7 +676,7 @@ namespace BoletoNet
 
             while (pos <= seq.Length)
             {
-                num = seq.Mid( pos, 1);
+                num = seq.Mid(pos, 1);
                 total += Convert.ToInt32(num) * mult;
 
                 mult -= 1;
@@ -715,7 +715,7 @@ namespace BoletoNet
 
             while (pos <= seq.Length)
             {
-                num = seq.Mid( pos, 1);
+                num = seq.Mid(pos, 1);
                 total += Convert.ToInt32(num) * mult;
 
                 mult -= 1;
@@ -774,10 +774,137 @@ namespace BoletoNet
         {
             throw new NotImplementedException();
         }
-        
+
+        public virtual IEnumerable<MotivosOcorrencia> ObterMotivosOcorrencia(int tipoOcorrencia, string motivos)
+        {
+            for (int i = 0; i < motivos.Length; i += 2)
+            {
+                var codigo = motivos.Substring(i, 2);
+                string descricao;
+                if (!string.IsNullOrEmpty(codigo) && motivosOcorrencia.TryGetValue(codigo, out descricao))
+                    yield return new MotivosOcorrencia(codigo, descricao);
+            }
+        }
+
         public virtual MotivosOcorrencia ObterMotivoOcorrencia(string motivo)
         {
-            throw new NotImplementedException();
+            string descricao;
+            if (!string.IsNullOrEmpty(motivo) && motivosOcorrencia.TryGetValue(motivo, out descricao))
+                return new MotivosOcorrencia(motivo, descricao);
+            return null;
         }
+
+        private static Dictionary<string, string> motivosOcorrencia = new Dictionary<string, string>()
+        {
+            { "01",  "Código do Banco Inválido"},
+            { "02",  "Código do Registro Detalhe Inválido"},
+            { "03",  "Código do Segmento Inválido"},
+            { "04",  "Código de Movimento Não Permitido para Carteira"},
+            { "05",  "Código de Movimento Inválido"},
+            { "06",  "Tipo/Número de Inscrição do Cedente Inválidos"},
+            { "07",  "Agência/Conta/DV Inválido"},
+            { "08",  "Nosso Número Inválido"},
+            { "09",  "Nosso Número Duplicado"},
+            { "10",  "Carteira Inválida"},
+            { "11",  "Forma de Cadastramento do Título Inválido"},
+            { "12",  "Tipo de Documento Inválido"},
+            { "13",  "Identificação da Emissão do Bloqueto Inválida"},
+            { "14",  "Identificação da Distribuição do Bloqueto Inválida"},
+            { "15",  "Características da Cobrança Incompatíveis"},
+            { "16",  "Data de Vencimento Inválida"},
+            { "17",  "Data de Vencimento Anterior a Data de Emissão"},
+            { "18",  "Vencimento Fora do Prazo de Operação"},
+            { "19",  "Título a Cargo de Bancos Correspondentes com Vencimento Inferior a XX Dias"},
+            { "20",  "Valor do Título Inválido"},
+            { "21",  "Espécie do Título Inválida"},
+            { "22",  "Espécie do Título Não Permitida para a Carteira"},
+            { "23",  "Aceite Inválido"},
+            { "24",  "Data da Emissão Inválida"},
+            { "25",  "Data da Emissão Posterior a Data de Entrada"},
+            { "26",  "Código de Juros de Mora Inválido"},
+            { "27",  "Valor / Taxa de Juros de Mora Inválido"},
+            { "28",  "Código do Desconto Inválido"},
+            { "29",  "Valor do Desconto Maior ou Igual ao Valor do Título"},
+            { "30",  "Desconto a Conceder Não Confere"},
+            { "31",  "Concessão de Desconto - Já Existe Desconto Anterior"},
+            { "32",  "Valor do IOF Inválido"},
+            { "33",  "Valor do Abatimento Inválido"},
+            { "34",  "Valor do Abatimento Maior ou Igual ao Valor do Título"},
+            { "35",  "Valor a Conceder Não Confere"},
+            { "36",  "Concessão de Abatimento - Já Existe Abatimento Anterior"},
+            { "37",  "Código para Protesto Inválido"},
+            { "38",  "Prazo para Protesto Inválido"},
+            { "39",  "Pedido de Protesto Não Permitido para o Título"},
+            { "40",  "Título com Ordem de Protesto Emitida"},
+            { "41",  "Pedido de Cancelamento / Sustação para Títulos sem Instrução de Protesto"},
+            { "42",  "Código para Baixa / Devolução Inválido"},
+            { "43",  "Prazo para Baixa / Devolução Inválido"},
+            { "44",  "Código da Moeda Inválido"},
+            { "45",  "Nome do Sacado Não Informado"},
+            { "46",  "Tipo / Número de Inscrição do Sacado Inválidos"},
+            { "47",  "Endereço do Sacado Não Informado"},
+            { "48",  "CEP Inválido"},
+            { "49",  "CEP Sem Praça de Cobrança(Não Localizado)"},
+            { "50",  "CEP Referente a um Banco Correspondente"},
+            { "51",  "CEP incompatível com a Unidade da Federação"},
+            { "52",  "Unidade da Federação Inválida"},
+            { "53",  "Tipo / Número de Inscrição do Sacador / Avalista Inválidos"},
+            { "54",  "Sacador / Avalista Não Informado"},
+            { "55",  "Nosso número no Banco Correspondente Não Informado"},
+            { "56",  "Código do Banco Correspondente Não Informado"},
+            { "57",  "Código da Multa Inválido"},
+            { "58",  "Data da Multa Inválida"},
+            { "59",  "Valor / Percentual da Multa Inválido"},
+            { "60",  "Movimento para Título Não Cadastrado"},
+            { "61",  "Alteração da Agência Cobradora / DV Inválida"},
+            { "62",  "Tipo de Impressão Inválido"},
+            { "63",  "Entrada para Título já Cadastrado"},
+            { "64",  "Número da Linha Inválido"},
+            { "65",  "Código do Banco para Débito Inválido"},
+            { "66",  "Agência / Conta / DV para Débito Inválido"},
+            { "67",  "Dados para Débito incompatível com a Identificação da Emissão do Bloqueto"},
+            { "68",  "Débito Automático Agendado"},
+            { "69",  "Débito Não Agendado - Erro nos Dados da Remessa"},
+            { "70",  "Débito Não Agendado - Sacado Não Consta do Cadastro de Autorizante"},
+            { "71",  "Débito Não Agendado - Cedente Não Autorizado pelo Sacado"},
+            { "72",  "Débito Não Agendado - Cedente Não Participa da Modalidade Débito Automático"},
+            { "73",  "Débito Não Agendado - Código de Moeda Diferente de Real(R$)"},
+            { "74",  "Débito Não Agendado - Data Vencimento Inválida"},
+            { "75",  "Débito Não Agendado, Conforme seu Pedido, Título Não Registrado"},
+            { "76",  "Débito Não Agendado, Tipo / Num.Inscrição do Debitado,Inválido"},
+            { "77",  "Transferência para Desconto Não Permitida para a Carteira do Título"},
+            { "78",  "Data Inferior ou Igual ao Vencimento para Débito Automático"},
+            { "79",  "Data Juros de Mora Inválido"},
+            { "80",  "Data do Desconto Inválida"},
+            { "81",  "Tentativas de Débito Esgotadas - Baixado"},
+            { "82",  "Tentativas de Débito Esgotadas - Pendente"},
+            { "83",  "Limite Excedido"},
+            { "84",  "Número Autorização Inexistente"},
+            { "85",  "Título com Pagamento Vinculado"},
+            { "86",  "Seu Número Inválido"},
+            { "87",  "e-mail / SMS enviado"},
+            { "88",  "e-mail Lido"},
+            { "89",  "e-mail / SMS devolvido - endereço de e-mail ou número do celular incorreto"},
+            { "90",  "e-mail devolvido - caixa postal cheia"},
+            { "91",  "e-mail / número do celular do sacado não informado"},
+            { "92",  "Sacado optante por Bloqueto Eletrônico - e-mail não enviado"},
+            { "93",  "Código para emissão de bloqueto não permite envio de e-mail"},
+            { "94",  "Código da Carteira inválido para envio e-mail."},
+            { "95",  "Contrato não permite o envio de e-mail"},
+            { "96",  "Número de contrato inválido"},
+            { "97",  "Rejeição da alteração do prazo limite de recebimento"},
+            { "98",  "Rejeição de dispensa de prazo limite de recebimento"},
+            { "99",  "Rejeição da alteração do número do título dado pelo cedente"},
+            { "A1",  "Rejeição da alteração do número controle do participante"},
+            { "A2",  "Rejeição da alteração dos dados do sacado"},
+            { "A3",  "Rejeição da alteração dos dados do sacador / avalista"},
+            { "A4",  "Sacado DDA"},
+            { "A5",  "Registro Rejeitado – Título já Liquidado"},
+            { "A6",  "Código do Convenente Inválido ou Encerrado"},
+            { "A7",  "Título já se encontra na situação Pretendida"},
+            { "A8",  "Valor do Abatimento inválido para cancelamento"},
+            { "A9",  "Não autoriza pagamento parcial"},
+            { "B1",  "Autoriza recebimento parcia"}
+        };
     }
 }

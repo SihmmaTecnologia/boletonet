@@ -81,6 +81,8 @@ namespace BoletoNet
             }
         }
 
+        public List<MotivosOcorrencia> MotivosOcorrencias { get; set; }
+
         public int Agencia
         {
             get { return _agencia; }

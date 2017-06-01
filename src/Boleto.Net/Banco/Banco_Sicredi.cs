@@ -1062,7 +1062,7 @@ namespace BoletoNet
             }
         }
 
-        private IEnumerable<MotivosOcorrencia> ObterMotivosOcorrencia(int tipoOcorrencia, string motivos)
+        public override IEnumerable<MotivosOcorrencia> ObterMotivosOcorrencia(int tipoOcorrencia, string motivos)
         {
             Dictionary<string, string> dicionario;
             if (!motivosPorTipoOcorrencia.TryGetValue(tipoOcorrencia, out dicionario))

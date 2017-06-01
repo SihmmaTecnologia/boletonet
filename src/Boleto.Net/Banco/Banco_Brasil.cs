@@ -4,6 +4,7 @@ using System.Web.UI;
 using BoletoNet.Util;
 using BoletoNet.EDI.Banco;
 using BoletoNet.Excecoes;
+using System.Linq;
 
 [assembly: WebResource("BoletoNet.Imagens.001.jpg", "image/jpg")]
 namespace BoletoNet
@@ -1491,6 +1492,7 @@ namespace BoletoNet
                 segmentoT.ValorTarifas = Convert.ToDecimal(registro.Substring(198, 15)) / 100; //29
                 //Jéferson (jefhtavares) em 12/12/2013 - O campo Valor Tarifas é composto de 15 posições (199-213) e não de 13
                 segmentoT.CodigoRejeicao = registro.Substring(213, 1) == "A" ? registro.Substring(214, 9) : registro.Substring(213, 10); //30
+                segmentoT.MotivosOcorrencias = ObterMotivosOcorrencia(segmentoT.idCodigoMovimento, registro.Substring(213, 10)).ToList();
                 segmentoT.UsoFebraban = _cnab31;
 
                 return segmentoT;
