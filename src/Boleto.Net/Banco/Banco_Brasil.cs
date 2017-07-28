@@ -1022,7 +1022,7 @@ namespace BoletoNet
 
                 if (boleto.JurosMora > 0)
                 {
-                    _segmentoP += "1";
+                    _segmentoP += string.IsNullOrWhiteSpace(boleto.CodJurosMora) ? "1" : boleto.CodJurosMora;
                     _segmentoP += Utils.FitStringLength(boleto.DataVencimento.ToString("ddMMyyyy"), 8, 8, '0', 0, true, true, false);
                     _segmentoP += Utils.FitStringLength(boleto.JurosMora.ApenasNumeros(), 15, 15, '0', 0, true, true, true);
                 }
