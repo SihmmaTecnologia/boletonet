@@ -140,8 +140,10 @@ namespace BoletoNet
                     boleto.CodigoBarra.Codigo =
                         string.Format("{0}{1}{2}{3}{4}{5}{6}{7}{8}000", Codigo, boleto.Moeda,
                                       FatorVencimento(boleto), valorBoleto, boleto.Carteira,
-                                      Utils.FormatCode(boleto.NossoNumero, 9), boleto.Cedente.ContaBancaria.Agencia,//Flavio(fhlviana@hotmail.com) => Cedente.ContaBancaria.Agencia --> boleto.Cedente.ContaBancaria.Agencia
-                                      Utils.FormatCode(boleto.Cedente.ContaBancaria.Conta, 5), boleto.Cedente.ContaBancaria.DigitoConta);//Flavio(fhlviana@hotmail.com) => Cedente.ContaBancaria.DigitoConta --> boleto.Cedente.ContaBancaria.DigitoConta
+                                      Utils.FormatCode(boleto.NossoNumero, 9), 
+                                      boleto.Cedente.ContaBancaria.Agencia,
+                                      Utils.FormatCode(boleto.Cedente.ContaBancaria.Conta
+                                      , 5), boleto.Cedente.ContaBancaria.DigitoConta);
                 }
                 else if (boleto.Carteira == "198" || boleto.Carteira == "107"
                          || boleto.Carteira == "122" || boleto.Carteira == "142"
@@ -165,172 +167,237 @@ namespace BoletoNet
 
         public override void FormataLinhaDigitavel(Boleto boleto)
         {
-            try
+            if (false && boleto.Carteira == "109")
             {
-                string numeroDocumento = Utils.FormatCode(boleto.NumeroDocumento.ToString(), 7);
-                string codigoCedente = Utils.FormatCode(boleto.Cedente.Codigo.ToString(), 5);
-                string agencia = Utils.FormatCode(boleto.Cedente.ContaBancaria.Agencia, 4);
-                string nossoNumero = Utils.FormatCode(boleto.Cedente.ContaBancaria.Agencia, 9);
+                if (string.IsNullOrEmpty(boleto.CodigoBarra.Codigo))
+                    FormataCodigoBarra(boleto);
 
-                string AAA = Utils.FormatCode(Codigo.ToString(), 3);
-                string B = boleto.Moeda.ToString();
-                string CCC = boleto.Carteira.ToString();
-                string DD = nossoNumero.Substring(0, 2);
-                string X = Mod10(AAA + B + CCC + DD).ToString();
-                string LD = string.Empty; //Linha Digitável
+                var campo1 = boleto.CodigoBarra.Codigo.Substring(0, 9);
+                var campo2 = boleto.CodigoBarra.Codigo.Substring(9, 10);
+                var campo3 = boleto.CodigoBarra.Codigo.Substring(19, 10);
 
-                string DDDDDD = nossoNumero.Substring(2, 6);
-
-                string K = string.Format(" {0} ", _dacBoleto);
-
-                string UUUU = FatorVencimento(boleto).ToString();
-                string VVVVVVVVVV = boleto.ValorBoleto.ToString("f").Replace(",", "").Replace(".", "");
-
-                string C1 = string.Empty;
-                string C2 = string.Empty;
-                string C3 = string.Empty;
-                string C5 = string.Empty;
-
-                #region AAABC.CCDDX
-
-                C1 = string.Format("{0}{1}{2}.", AAA, B, CCC.Substring(0, 1));
-                C1 += string.Format("{0}{1}{2} ", CCC.Substring(1, 2), DD, X);
-
-                #endregion AAABC.CCDDX
-
-                #region UUUUVVVVVVVVVV
-
-                VVVVVVVVVV = Utils.FormatCode(VVVVVVVVVV, 10);
-                C5 = UUUU + VVVVVVVVVV;
-
-                #endregion UUUUVVVVVVVVVV
-
-                if (boleto.Carteira == "175" || boleto.Carteira == "176" || boleto.Carteira == "178" || boleto.Carteira == "109" || boleto.Carteira == "121" || boleto.Carteira == "112")//MarcielTorres - adicionado a carteira 112
+                var campos = new string[] { campo1, campo2, campo3 };
+                var camposComDAC = new string[3];
+                for (int i = campos.Length - 1; i >= 0; i--)
                 {
-                    #region Definições
-                    /* AAABC.CCDDX.DDDDD.DEFFFY.FGGGG.GGHHHZ.K.UUUUVVVVVVVVVV
-              * ------------------------------------------------------
-              * Campo 1
-              * AAABC.CCDDX
-              * AAA - Código do Banco
-              * B   - Moeda
-              * CCC - Carteira
-              * DD  - 2 primeiros números Nosso Número
-              * X   - DAC Campo 1 (AAABC.CCDD) Mod10
-              * 
-              * Campo 2
-              * DDDDD.DEFFFY
-              * DDDDD.D - Restante Nosso Número
-              * E       - DAC (Agência/Conta/Carteira/Nosso Número)
-              * FFF     - Três primeiros da agência
-              * Y       - DAC Campo 2 (DDDDD.DEFFF) Mod10
-              * 
-              * Campo 3
-              * FGGGG.GGHHHZ
-              * F       - Restante da Agência
-              * GGGG.GG - Número Conta Corrente + DAC
-              * HHH     - Zeros (Não utilizado)
-              * Z       - DAC Campo 3
-              * 
-              * Campo 4
-              * K       - DAC Código de Barras
-              * 
-              * Campo 5
-              * UUUUVVVVVVVVVV
-              * UUUU       - Fator Vencimento
-              * VVVVVVVVVV - Valor do Título 
-              */
-                    #endregion Definições
-
-                    #region DDDDD.DEFFFY
-
-                    string E = nossoNumero.Last().ToString();
-                    string FFF = agencia.Substring(0, 3);
-                    string Y = Mod10(DDDDDD + E + FFF).ToString();
-
-                    C2 = string.Format("{0}.", DDDDDD.Substring(0, 5));
-                    C2 += string.Format("{0}{1}{2}{3} ", DDDDDD.Substring(5, 1), E, FFF, Y);
-
-                    #endregion DDDDD.DEFFFY
-
-                    #region FGGGG.GGHHHZ
-
-                    string F = agencia.Substring(3, 1);
-                    string GGGGGG = boleto.Cedente.ContaBancaria.Conta + boleto.Cedente.ContaBancaria.DigitoConta;
-                    string HHH = "000";
-                    string Z = Mod10(F + GGGGGG + HHH).ToString();
-
-                    C3 = string.Format("{0}{1}.{2}{3}{4}", F, GGGGGG.Substring(0, 4), GGGGGG.Substring(4, 2), HHH, Z);
-
-                    #endregion FGGGG.GGHHHZ
-                }
-                else if (boleto.Carteira == "198" || boleto.Carteira == "107"
-                     || boleto.Carteira == "122" || boleto.Carteira == "142"
-                     || boleto.Carteira == "143" || boleto.Carteira == "196")
-                {
-                    #region Definições
-                    /* AAABC.CCDDX.DDDDD.DEEEEY.EEEFF.FFFGHZ.K.UUUUVVVVVVVVVV
-              * ------------------------------------------------------
-              * Campo 1 - AAABC.CCDDX
-              * AAA - Código do Banco
-              * B   - Moeda
-              * CCC - Carteira
-              * DD  - 2 primeiros números Nosso Número
-              * X   - DAC Campo 1 (AAABC.CCDD) Mod10
-              * 
-              * Campo 2 - DDDDD.DEEEEY
-              * DDDDD.D - Restante Nosso Número
-              * EEEE    - 4 primeiros numeros do número do documento
-              * Y       - DAC Campo 2 (DDDDD.DEEEEY) Mod10
-              * 
-              * Campo 3 - EEEFF.FFFGHZ
-              * EEE     - Restante do número do documento
-              * FFFFF   - Código do Cliente
-              * G       - DAC (Carteira/Nosso Numero(sem DAC)/Numero Documento/Codigo Cliente)
-              * H       - zero
-              * Z       - DAC Campo 3
-              * 
-              * Campo 4 - K
-              * K       - DAC Código de Barras
-              * 
-              * Campo 5 - UUUUVVVVVVVVVV
-              * UUUU       - Fator Vencimento
-              * VVVVVVVVVV - Valor do Título 
-              */
-                    #endregion Definições
-
-                    #region DDDDD.DEEEEY
-
-                    string EEEE = numeroDocumento.Substring(0, 4);
-                    string Y = Mod10(DDDDDD + EEEE).ToString();
-
-                    C2 = string.Format("{0}.", DDDDDD.Substring(0, 5));
-                    C2 += string.Format("{0}{1}{2} ", DDDDDD.Substring(5, 1), EEEE, Y);
-
-                    #endregion DDDDD.DEEEEY
-
-                    #region EEEFF.FFFGHZ
-
-                    string EEE = numeroDocumento.Substring(4, 3);
-                    string FFFFF = codigoCedente;
-                    string G = Mod10(boleto.Carteira + nossoNumero.Substring(0, 8) + numeroDocumento + codigoCedente).ToString();
-                    string H = "0";
-                    string Z = Mod10(EEE + FFFFF + G + H).ToString();
-                    C3 = string.Format("{0}{1}.{2}{3}{4}{5}", EEE, FFFFF.Substring(0, 2), FFFFF.Substring(2, 3), G, H, Z);
-
-                    #endregion EEEFF.FFFGHZ
-                }
-                else if (boleto.Carteira == "126" || boleto.Carteira == "131" || boleto.Carteira == "146" || boleto.Carteira == "150" || boleto.Carteira == "168")
-                {
-                    throw new NotImplementedException("Função não implementada.");
+                    var acumulado = 0;
+                    for (int j = campos[i].Length - 1; j >= 0; j--)
+                    {
+                        var posicao = (campos[i].Length - 1) - j;
+                        var fator = posicao % 2 == 0 ? 2 : 1;
+                        var valor = (fator * int.Parse(campos[i][j].ToString()));
+                        foreach (var caracter in valor.ToString())
+                            acumulado += int.Parse(caracter.ToString());
+                    }
+                    var dacCampo = 10 - (acumulado % 10);
+                    camposComDAC[i] = string.Concat(campos[i], dacCampo);
                 }
 
-                boleto.CodigoBarra.LinhaDigitavel = C1 + C2 + C3 + K + C5;
+                var linhaDigitavel = string.Concat(camposComDAC[0], camposComDAC[1], camposComDAC[2], boleto.CodigoBarra.Codigo.Substring(29));
+                var linhaDigitavel1 = linhaDigitavel.Substring(0, 5);
+                var linhaDigitavel2 = linhaDigitavel.Substring(5, 5);
+                var linhaDigitavel3 = linhaDigitavel.Substring(10, 5);
+                var linhaDigitavel4 = linhaDigitavel.Substring(15, 6);
+                var linhaDigitavel5 = linhaDigitavel.Substring(21, 5);
+                var linhaDigitavel6 = linhaDigitavel.Substring(26, 6);
+                var linhaDigitavel7 = linhaDigitavel.Substring(32, 1);
+                var linhaDigitavel8 = linhaDigitavel.Substring(33, 14);
+
+                boleto.CodigoBarra.LinhaDigitavel = string.Format("{0}.{1} {2}.{3} {4}.{5} {6} {7}",
+                    linhaDigitavel1,
+                    linhaDigitavel2,
+                    linhaDigitavel3,
+                    linhaDigitavel4,
+                    linhaDigitavel5,
+                    linhaDigitavel6,
+                    linhaDigitavel7,
+                    linhaDigitavel8
+                );
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception("Erro ao formatar linha digitável.", ex);
+
+                try
+                {
+                    string numeroDocumento = Utils.FormatCode(boleto.NumeroDocumento.ToString(), 7);
+                    string codigoCedente = Utils.FormatCode(boleto.Cedente.Codigo.ToString(), 5);
+                    string agencia = Utils.FormatCode(boleto.Cedente.ContaBancaria.Agencia, 4);
+                    string nossoNumero = Utils.FormatCode(boleto.Cedente.ContaBancaria.Agencia, 9);
+
+                    string AAA = Utils.FormatCode(Codigo.ToString(), 3);
+                    string B = boleto.Moeda.ToString();
+                    string CCC = boleto.Carteira.ToString();
+                    string DD = nossoNumero.Substring(0, 2);
+                    string X = DacDigitavel(AAA + B + CCC + DD).ToString();
+                    string LD = string.Empty; //Linha Digitável
+
+                    string DDDDDD = nossoNumero.Substring(2, 6);
+
+                    string K = string.Format(" {0} ", _dacBoleto);
+
+                    string UUUU = FatorVencimento(boleto).ToString();
+                    string VVVVVVVVVV = boleto.ValorBoleto.ToString("f").Replace(",", "").Replace(".", "");
+
+                    string C1 = string.Empty;
+                    string C2 = string.Empty;
+                    string C3 = string.Empty;
+                    string C5 = string.Empty;
+
+                    #region AAABC.CCDDX
+
+                    C1 = string.Format("{0}{1}{2}.", AAA, B, CCC.Substring(0, 1));
+                    C1 += string.Format("{0}{1}{2} ", CCC.Substring(1, 2), DD, X);
+
+                    #endregion AAABC.CCDDX
+
+                    #region UUUUVVVVVVVVVV
+
+                    VVVVVVVVVV = Utils.FormatCode(VVVVVVVVVV, 10);
+                    C5 = UUUU + VVVVVVVVVV;
+
+                    #endregion UUUUVVVVVVVVVV
+
+                    if (boleto.Carteira == "175" || boleto.Carteira == "176" || boleto.Carteira == "178" || boleto.Carteira == "109" || boleto.Carteira == "121" || boleto.Carteira == "112")//MarcielTorres - adicionado a carteira 112
+                    {
+                        #region Definições
+                        /* AAABC.CCDDX.DDDDD.DEFFFY.FGGGG.GGHHHZ.K.UUUUVVVVVVVVVV
+                  * ------------------------------------------------------
+                  * Campo 1
+                  * AAABC.CCDDX
+                  * AAA - Código do Banco
+                  * B   - Moeda
+                  * CCC - Carteira
+                  * DD  - 2 primeiros números Nosso Número
+                  * X   - DAC Campo 1 (AAABC.CCDD) Mod10
+                  * 
+                  * Campo 2
+                  * DDDDD.DEFFFY
+                  * DDDDD.D - Restante Nosso Número
+                  * E       - DAC (Agência/Conta/Carteira/Nosso Número)
+                  * FFF     - Três primeiros da agência
+                  * Y       - DAC Campo 2 (DDDDD.DEFFF) Mod10
+                  * 
+                  * Campo 3
+                  * FGGGG.GGHHHZ
+                  * F       - Restante da Agência
+                  * GGGG.GG - Número Conta Corrente + DAC
+                  * HHH     - Zeros (Não utilizado)
+                  * Z       - DAC Campo 3
+                  * 
+                  * Campo 4
+                  * K       - DAC Código de Barras
+                  * 
+                  * Campo 5
+                  * UUUUVVVVVVVVVV
+                  * UUUU       - Fator Vencimento
+                  * VVVVVVVVVV - Valor do Título 
+                  */
+                        #endregion Definições
+
+                        #region DDDDD.DEFFFY
+
+                        string E = nossoNumero.Last().ToString();
+                        string FFF = agencia.Substring(0, 3);
+                        string Y = DacDigitavel(DDDDDD + E + FFF).ToString();
+
+                        C2 = string.Format("{0}.", DDDDDD.Substring(0, 5));
+                        C2 += string.Format("{0}{1}{2}{3} ", DDDDDD.Substring(5, 1), E, FFF, Y);
+
+                        #endregion DDDDD.DEFFFY
+
+                        #region FGGGG.GGHHHZ
+
+                        string F = agencia.Substring(3, 1);
+                        string GGGGGG = boleto.Cedente.ContaBancaria.Conta + boleto.Cedente.ContaBancaria.DigitoConta;
+                        string HHH = "000";
+                        string Z = DacDigitavel(F + GGGGGG + HHH).ToString();
+
+                        C3 = string.Format("{0}{1}.{2}{3}{4}", F, GGGGGG.Substring(0, 4), GGGGGG.Substring(4, 2), HHH, Z);
+
+                        #endregion FGGGG.GGHHHZ
+                    }
+                    else if (boleto.Carteira == "198" || boleto.Carteira == "107"
+                         || boleto.Carteira == "122" || boleto.Carteira == "142"
+                         || boleto.Carteira == "143" || boleto.Carteira == "196")
+                    {
+                        #region Definições
+                        /* AAABC.CCDDX.DDDDD.DEEEEY.EEEFF.FFFGHZ.K.UUUUVVVVVVVVVV
+                  * ------------------------------------------------------
+                  * Campo 1 - AAABC.CCDDX
+                  * AAA - Código do Banco
+                  * B   - Moeda
+                  * CCC - Carteira
+                  * DD  - 2 primeiros números Nosso Número
+                  * X   - DAC Campo 1 (AAABC.CCDD) Mod10
+                  * 
+                  * Campo 2 - DDDDD.DEEEEY
+                  * DDDDD.D - Restante Nosso Número
+                  * EEEE    - 4 primeiros numeros do número do documento
+                  * Y       - DAC Campo 2 (DDDDD.DEEEEY) Mod10
+                  * 
+                  * Campo 3 - EEEFF.FFFGHZ
+                  * EEE     - Restante do número do documento
+                  * FFFFF   - Código do Cliente
+                  * G       - DAC (Carteira/Nosso Numero(sem DAC)/Numero Documento/Codigo Cliente)
+                  * H       - zero
+                  * Z       - DAC Campo 3
+                  * 
+                  * Campo 4 - K
+                  * K       - DAC Código de Barras
+                  * 
+                  * Campo 5 - UUUUVVVVVVVVVV
+                  * UUUU       - Fator Vencimento
+                  * VVVVVVVVVV - Valor do Título 
+                  */
+                        #endregion Definições
+
+                        #region DDDDD.DEEEEY
+
+                        string EEEE = numeroDocumento.Substring(0, 4);
+                        string Y = Mod10(DDDDDD + EEEE).ToString();
+
+                        C2 = string.Format("{0}.", DDDDDD.Substring(0, 5));
+                        C2 += string.Format("{0}{1}{2} ", DDDDDD.Substring(5, 1), EEEE, Y);
+
+                        #endregion DDDDD.DEEEEY
+
+                        #region EEEFF.FFFGHZ
+
+                        string EEE = numeroDocumento.Substring(4, 3);
+                        string FFFFF = codigoCedente;
+                        string G = Mod10(boleto.Carteira + nossoNumero.Substring(0, 8) + numeroDocumento + codigoCedente).ToString();
+                        string H = "0";
+                        string Z = Mod10(EEE + FFFFF + G + H).ToString();
+                        C3 = string.Format("{0}{1}.{2}{3}{4}{5}", EEE, FFFFF.Substring(0, 2), FFFFF.Substring(2, 3), G, H, Z);
+
+                        #endregion EEEFF.FFFGHZ
+                    }
+                    else if (boleto.Carteira == "126" || boleto.Carteira == "131" || boleto.Carteira == "146" || boleto.Carteira == "150" || boleto.Carteira == "168")
+                    {
+                        throw new NotImplementedException("Função não implementada.");
+                    }
+
+                    boleto.CodigoBarra.LinhaDigitavel = C1 + C2 + C3 + K + C5;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Erro ao formatar linha digitável.", ex);
+                }
             }
+        }
+
+        private int DacDigitavel(string numero)
+        {
+            var acumulado = 0;
+            for (int i = numero.Length - 1; i >= 0; i--)
+            {
+                var posicao = (numero.Length - 1) - i;
+                var fator = posicao % 2 == 0 ? 2 : 1;
+                var valor = (fator * int.Parse(numero[i].ToString()));
+                foreach (var caracter in valor.ToString())
+                    acumulado += int.Parse(caracter.ToString());
+            }
+            return 10 - (acumulado % 10);
         }
 
         public string FormatarNossoNumero(Boleto boleto)

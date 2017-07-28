@@ -52,6 +52,21 @@ namespace BoletoNet.Testes.BancoItau
         }
 
         [TestMethod]
+        public void Itau_Carteira_109_LinhaDigitavel_Novo()
+        {
+            var boletoBancario = GerarBoletoCarteira109();
+            boletoBancario.Boleto.Valida();
+
+            boletoBancario.Boleto.CodigoBarra.Codigo = "34191101234567880057123457000616670000012345";
+
+            string linhaDigitavelValida = "34191101213456788005871234570001616670000012345";
+
+            boletoBancario.Boleto.FormataCampos();
+
+            Assert.AreEqual(boletoBancario.Boleto.CodigoBarra.LinhaDigitavel, linhaDigitavelValida, "Linha digitável inválida");
+        }
+
+        [TestMethod]
         public void Itau_Carteira_109_CodigoBarra()
         {
             var boletoBancario = GerarBoletoCarteira109();
