@@ -815,20 +815,14 @@ namespace BoletoNet
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0005, 012, 0, string.Empty, ' '));                              //005-016
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0017, 001, 0, "A", ' '));                                       //017-017  Tipo de moeda: 'A' - REAL
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0018, 001, 0, "A", ' '));                                       //018-018  Tipo de desconto: 'A' - VALOR
+                
                 #region Código de Juros
-                string CodJuros = "A";
-                decimal ValorOuPercJuros = 0;
-                if (boleto.JurosMora > 0)
-                {
-                    CodJuros = "A";
-                    ValorOuPercJuros = boleto.JurosMora;
-                }
-                else if (boleto.PercJurosMora > 0)
-                {
-                    CodJuros = "B";
-                    ValorOuPercJuros = boleto.PercJurosMora;
-                }
+
+                var CodJuros = boleto.CodJurosMora;
+                var ValorOuPercJuros = boleto.JurosMora;
+
                 #endregion
+
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0019, 001, 0, CodJuros, ' '));                                  //019-019  Tipo de juros: 'A' - VALOR / 'B' PERCENTUAL
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0020, 028, 0, string.Empty, ' '));                              //020-047
                 #region Nosso Número + DV
