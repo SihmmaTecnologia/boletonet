@@ -10,9 +10,8 @@ using System.Linq;
 namespace BoletoNet
 {
     /// <author>  
-    /// Eduardo Frare
-    /// Stiven 
-    /// </author>    
+    /// Eduardo Frare Stiven 
+    /// </author>
     internal class Banco_Bradesco : AbstractBanco, IBanco
     {
         private string _dacNossoNumero = string.Empty;
@@ -26,6 +25,14 @@ namespace BoletoNet
             this.Codigo = 237;
             this.Digito = "2";
             this.Nome = "Bradesco";
+        }
+
+        public override long GerarNossoNumero(DadosGeracaoNossoNumero dados)
+        {
+            if (dados.NossoNumero.Length > 11)
+                throw new NotImplementedException(string.Format("Para a carteira {0}, a quantidade máxima são de 11 de posições para o nosso número", dados.Carteira));
+
+            return long.Parse(Utils.FormatCode(dados.NossoNumero, 11));
         }
 
         /// <summary>
@@ -149,7 +156,8 @@ namespace BoletoNet
         /// 
         public override void FormataCodigoBarra(Boleto boleto)
         {
-            var valorBoleto = boleto.ValorBoleto.ToString("N2").Replace(",", "").Replace(".", "");
+            var valor = boleto.ValorCobrado > boleto.ValorBoleto ? boleto.ValorCobrado : boleto.ValorBoleto;
+            var valorBoleto = valor.ToString("N2").Replace(",", "").Replace(".", "");
             valorBoleto = Utils.FormatCode(valorBoleto, 10);
 
             if (boleto.Carteira == "02" || boleto.Carteira == "03" || boleto.Carteira == "09" || boleto.Carteira == "19" || boleto.Carteira == "26") // Com registro
@@ -176,7 +184,6 @@ namespace BoletoNet
                 throw new NotImplementedException("Carteira ainda não implementada.");
             }
 
-
             _dacBoleto = Mod11(boleto.CodigoBarra.Codigo, 9);
 
             boleto.CodigoBarra.Codigo = Strings.Left(boleto.CodigoBarra.Codigo, 4) + _dacBoleto + Strings.Right(boleto.CodigoBarra.Codigo, 39);
@@ -195,7 +202,7 @@ namespace BoletoNet
         {
 
             string FormataCampoLivre = string.Format("{0}{1}{2}{3}{4}", boleto.Cedente.ContaBancaria.Agencia, boleto.Carteira,
-                                            boleto.NossoNumero, boleto.Cedente.ContaBancaria.Conta, "0");
+                                            Utils.FormatCode(boleto.NossoNumero, 11), boleto.Cedente.ContaBancaria.Conta, "0");
 
             return FormataCampoLivre;
         }
