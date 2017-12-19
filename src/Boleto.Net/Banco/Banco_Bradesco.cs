@@ -40,7 +40,7 @@ namespace BoletoNet
         /// </summary>
         public string CalcularDigitoNossoNumero(Boleto boleto)
         {
-            return Mod11Bradesco(boleto.Carteira + Utils.FitStringLength(boleto.NossoNumero, 11, 11, '0', 0, true, true, true), 7);
+            return Mod11(boleto.Carteira + Utils.FormatCode(boleto.NossoNumero, 11), 7).ToString();
         }
 
         #region IBanco Members
@@ -207,23 +207,17 @@ namespace BoletoNet
             return FormataCampoLivre;
         }
 
-
         public override void FormataNumeroDocumento(Boleto boleto)
         {
             throw new NotImplementedException("Função ainda não implementada.");
         }
 
-
-        public string FormatarNossoNumero(Boleto boleto)
+        public new string FormatarNossoNumero(Boleto boleto)
         {
             var nossoNumero = Utils.FormatCode(boleto.NossoNumero, 11);
-            var digVerificador = Mod11(boleto.Carteira + nossoNumero, 7);
-            return string.Format("{0}/{1}-{2}", Utils.FormatCode(boleto.Carteira, 3), nossoNumero, digVerificador);
-        }
+            var digVerificador = CalcularDigitoNossoNumero(boleto);
 
-        public override string GerarHeaderRemessa(string numeroConvenio, Cedente cedente, TipoArquivo tipoArquivo, int numeroArquivoRemessa, Boleto boletos)
-        {
-            throw new NotImplementedException("Função não implementada.");
+            return string.Format("{0}/{1}-{2}", Utils.FormatCode(boleto.Carteira, 3), nossoNumero, digVerificador);
         }
 
         public override void ValidaBoleto(Boleto boleto)
@@ -413,61 +407,6 @@ namespace BoletoNet
                 default:
                     return "";
             }
-        }
-
-        private string Mod11Bradesco(string seq, int b)
-        {
-            #region Trecho do manual layout_cobranca_port.pdf do BRADESCO
-            /* 
-            Para o cálculo do dígito, será necessário acrescentar o número da carteira à esquerda antes do Nosso Número, 
-            e aplicar o módulo 11, com base 7.
-            Multiplicar cada algarismo que compõe o número pelo seu respectivo multiplicador (PESO).
-            Os multiplicadores(PESOS) variam de 2 a 7.
-            O primeiro dígito da direita para a esquerda deverá ser multiplicado por 2, o segundo por 3 e assim sucessivamente.
-             
-              Carteira   Nosso Numero
-                ______   _________________________________________
-                1    9   0   0   0   0   0   0   0   0   0   0   2
-                x    x   x   x   x   x   x   x   x   x   x   x   x
-                2    7   6   5   4   3   2   7   6   5   4   3   2
-                =    =   =   =   =   =   =   =   =   =   =   =   =
-                2 + 63 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 4 = 69
-
-            O total da soma deverá ser dividido por 11: 69 / 11 = 6 tendo como resto = 3
-            A diferença entre o divisor e o resto, será o dígito de autoconferência: 11 - 3 = 8 (dígito de auto-conferência)
-            
-            Se o resto da divisão for “1”, desprezar o cálculo de subtração e considerar o dígito como “P”. 
-            Se o resto da divisão for “0”, desprezar o cálculo de subtração e considerar o dígito como “0”.
-            */
-            #endregion
-
-            /* Variáveis
-             * -------------
-             * s - Soma
-             * p - Peso
-             * b - Base
-             * r - Resto
-             */
-
-            int s = 0, p = 2;
-
-            for (int i = seq.Length; i > 0; i--)
-            {
-                s = s + (Convert.ToInt32(seq.Mid( i, 1)) * p);
-                if (p == b)
-                    p = 2;
-                else
-                    p = p + 1;
-            }
-
-            int r = (s % 11);
-
-            if (r == 0)
-                return "0";
-            else if (r == 1)
-                return "P";
-            else
-                return (11 - r).ToString();
         }
 
         public override DetalheRetorno LerDetalheRetornoCNAB400(string registro)
@@ -941,7 +880,7 @@ namespace BoletoNet
                 _detalhe += Utils.FitStringLength(boleto.NossoNumero, 11, 11, '0', 0, true, true, true); //Nosso Numero (11)
 
                 // Força o NossoNumero a ter 11 dígitos. Alterado por Luiz Ponce 07/07/2012
-                _detalhe += Mod11Bradesco(boleto.Carteira + Utils.FitStringLength(boleto.NossoNumero, 11, 11, '0', 0, true, true, true), 7); // Digito de Auto Conferencia do Nosso Número (01)
+                _detalhe +=  Mod11(boleto.Carteira + Utils.FormatCode(boleto.NossoNumero, 11), 7).ToString(); // Digito de Auto Conferencia do Nosso Número (01)
                 //Desconto Bonificação por dia (10, N)
                 _detalhe += "0000000000";
 
@@ -994,7 +933,7 @@ namespace BoletoNet
                 }
 
 
-                _detalhe += Utils.Right(boleto.NumeroDocumento, 10, '0', true); //Nº do Documento (10, A)
+                _detalhe += Utils.FormatCode(boleto.NumeroDocumento, "0", 10, false); //Nº do Documento (10, A)
                 _detalhe += boleto.DataVencimento.ToString("ddMMyy"); //Data do Vencimento do Título (10, N) DDMMAA
 
                 //Valor do Título (13, N)
@@ -1199,7 +1138,6 @@ namespace BoletoNet
         # endregion
         #endregion Seygi Gerando Remessa
 
-
         /// <summary>
         /// Efetua as Validações dentro da classe Boleto, para garantir a geração da remessa
         /// </summary>
@@ -1211,7 +1149,6 @@ namespace BoletoNet
             mensagem = vMsg;
             return vRetorno;
         }
-
 
         public string GerarMensagemVariavelRemessaCNAB400(Boleto boleto, ref int numeroRegistro, TipoArquivo tipoArquivo)
         {
@@ -1279,6 +1216,5 @@ namespace BoletoNet
                 throw new Exception("Erro ao gerar DETALHE do arquivo CNAB400.", ex);
             }
         }
-
     }
 }
