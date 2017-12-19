@@ -216,10 +216,11 @@ namespace BoletoNet
 
         public string FormatarNossoNumero(Boleto boleto)
         {
-            var nossoNumero = boleto.NossoNumero.Substring(boleto.NossoNumero.Length - 1);
-            var digVerificador = boleto.NossoNumero.Last();
+            var nossoNumero = Utils.FormatCode(boleto.NossoNumero, 11);
+            var digVerificador = Mod11(boleto.Carteira + nossoNumero, 7);
             return string.Format("{0}/{1}-{2}", Utils.FormatCode(boleto.Carteira, 3), nossoNumero, digVerificador);
         }
+
         public override string GerarHeaderRemessa(string numeroConvenio, Cedente cedente, TipoArquivo tipoArquivo, int numeroArquivoRemessa, Boleto boletos)
         {
             throw new NotImplementedException("Função não implementada.");
@@ -920,7 +921,7 @@ namespace BoletoNet
                 _detalhe += Utils.FitStringLength(boleto.Cedente.ContaBancaria.Conta, 7, 7, '0', 0, true, true, true); //Conta Corrente(7)
                 _detalhe += Utils.FitStringLength(boleto.Cedente.ContaBancaria.DigitoConta, 1, 1, '0', 0, true, true, true);//D da conta(1)
                 //Nº de Controle do Participante - uso livre da empresa (25, A)  //  brancos
-                _detalhe += Utils.FitStringLength(boleto.NumeroControle, 25, 25, ' ', 0, true, true, false);
+                _detalhe += Utils.FitStringLength(boleto.NumeroControle ?? boleto.NumeroDocumento, 25, 25, ' ', 0, true, true, false);
 
                 //Código do Banco, só deve ser preenchido quando cliente cedente optar por "Débito Automático".
                 _detalhe += "000";
@@ -986,11 +987,12 @@ namespace BoletoNet
                 if (boleto.Remessa == null || string.IsNullOrEmpty(boleto.Remessa.CodigoOcorrencia.Trim()))
                 {
                     _detalhe += "01";
-                } 
-                else {
-                    _detalhe += boleto.Remessa.CodigoOcorrencia.PadLeft(2, '0') ;
                 }
-                
+                else
+                {
+                    _detalhe += boleto.Remessa.CodigoOcorrencia.PadLeft(2, '0');
+                }
+
 
                 _detalhe += Utils.Right(boleto.NumeroDocumento, 10, '0', true); //Nº do Documento (10, A)
                 _detalhe += boleto.DataVencimento.ToString("ddMMyy"); //Data do Vencimento do Título (10, N) DDMMAA
@@ -1017,7 +1019,7 @@ namespace BoletoNet
 
                 _detalhe += "N"; //Identificação (1, A) A – aceito; N - não aceito
                 _detalhe += boleto.DataProcessamento.ToString("ddMMyy"); //Data da emissão do Título (6, N) DDMMAA
-                
+
                 //Valida se tem instrução no list de instruções, repassa ao arquivo de remessa
                 string vInstrucao1 = "00"; //1ª instrução (2, N) Caso Queira colocar um cod de uma instrução. ver no Manual caso nao coloca 00
                 string vInstrucao2 = "00"; //2ª instrução (2, N) Caso Queira colocar um cod de uma instrução. ver no Manual caso nao coloca 00
@@ -1064,8 +1066,8 @@ namespace BoletoNet
                 _detalhe += Utils.FitStringLength(boleto.JurosMora.ApenasNumeros(), 13, 13, '0', 0, true, true, true);
 
                 //Data Limite P/Concessão de Desconto (06, N)
-				//if (boleto.DataDesconto.ToString("dd/MM/yyyy") == "01/01/0001")
-				if (boleto.DataDesconto == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
+                //if (boleto.DataDesconto.ToString("dd/MM/yyyy") == "01/01/0001")
+                if (boleto.DataDesconto == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
                 {
                     _detalhe += "000000"; //Caso nao tenha data de vencimento
                 }
@@ -1104,7 +1106,7 @@ namespace BoletoNet
                 _detalhe += Utils.FitStringLength(boleto.Sacado.Nome.TrimStart(' '), 40, 40, ' ', 0, true, true, false).ToUpper();
 
                 //Endereço Completo (40, A)
-                _detalhe += Utils.FitStringLength(boleto.Sacado.Endereco.End.TrimStart(' '), 40, 40, ' ', 0, true, true, false).ToUpper();
+                _detalhe += Utils.FitStringLength(boleto.Sacado.Endereco.Numero.TrimStart(' '), 40, 40, ' ', 0, true, true, false).ToUpper();
 
                 //1ª Mensagem (12, A)
                 /*Campo livre para uso da Empresa. A mensagem enviada nesse campo será impressa
