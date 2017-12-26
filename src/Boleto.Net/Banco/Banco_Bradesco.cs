@@ -40,7 +40,9 @@ namespace BoletoNet
         /// </summary>
         public string CalcularDigitoNossoNumero(Boleto boleto)
         {
-            return Mod11(boleto.Carteira + Utils.FormatCode(boleto.NossoNumero, 11), 7).ToString();
+            var digito = Mod11(boleto.Carteira + Utils.FormatCode(boleto.NossoNumero, 11), 7);
+
+            return digito == 1 ? "P" : digito.ToString();
         }
 
         #region IBanco Members
@@ -270,12 +272,6 @@ namespace BoletoNet
 			if (boleto.DataDocumento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
                 boleto.DataDocumento = DateTime.Now;
 
-            boleto.QuantidadeMoeda = 0;
-
-            // Atribui o nome do banco ao local de pagamento
-            if (string.IsNullOrEmpty(boleto.LocalPagamento))
-                boleto.LocalPagamento = "PAGÁVEL PREFERENCIALMENTE NAS AGÊNCIAS DO BRADESCO";
-            
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);
         }
@@ -712,7 +708,7 @@ namespace BoletoNet
                         _header = GerarHeaderRemessaCNAB240();
                         break;
                     case TipoArquivo.CNAB400:
-                        _header = GerarHeaderRemessaCNAB400(int.Parse(numeroConvenio), cedente, numeroArquivoRemessa);
+                        _header = GerarHeaderRemessaCNAB400(long.Parse(numeroConvenio), cedente, numeroArquivoRemessa);
                         break;
                     case TipoArquivo.Outro:
                         throw new Exception("Tipo de arquivo inexistente.");
@@ -732,7 +728,7 @@ namespace BoletoNet
             throw new NotImplementedException("Função não implementada.");
         }
 
-        public string GerarHeaderRemessaCNAB400(int numeroConvenio, Cedente cedente, int numeroArquivoRemessa)
+        public string GerarHeaderRemessaCNAB400(long numeroConvenio, Cedente cedente, int numeroArquivoRemessa)
         {
             try
             {

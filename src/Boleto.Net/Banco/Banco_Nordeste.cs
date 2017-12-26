@@ -53,7 +53,7 @@ namespace BoletoNet
 
             boleto.Carteira = FormataCarteira(boleto.Carteira);//Transforma de Carteira para Tipo de Operacao. Ex.: de '4' para '21'
 
-            boleto.QuantidadeMoeda = 0;
+            boleto.QuantidadeMoeda = "0";
 
             boleto.Cedente.ContaBancaria.Agencia = Utils.FormatCode(boleto.Cedente.ContaBancaria.Agencia, 4);
             boleto.Cedente.ContaBancaria.Conta = Utils.FormatCode(boleto.Cedente.ContaBancaria.Conta, 7);

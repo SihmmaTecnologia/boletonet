@@ -281,7 +281,7 @@ namespace BoletoNet
 			if (boleto.DataDocumento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
                 boleto.DataDocumento = DateTime.Now;
 
-            boleto.QuantidadeMoeda = 0;
+            boleto.QuantidadeMoeda = "0";
 
             //Atribui o nome do banco ao local de pagamento
             boleto.LocalPagamento = "PAGÁVEL EM QUALQUER CORRESPONDENTE BANCÁRIO PERTO DE VOCÊ!";

@@ -102,7 +102,7 @@ namespace BoletoNet
             if (boleto.DataDocumento == DateTime.MinValue) // diegomodolo (diego.ribeiro@nectarnet.com.br)
                 boleto.DataDocumento = DateTime.Now;
 
-            boleto.QuantidadeMoeda = 0;
+            boleto.QuantidadeMoeda = "0";
 
             FormataCodigoBarra(boleto);
             FormataLinhaDigitavel(boleto);

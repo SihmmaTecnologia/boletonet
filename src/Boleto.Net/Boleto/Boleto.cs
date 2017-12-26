@@ -27,7 +27,7 @@ namespace BoletoNet
 		private decimal _valorBoleto;
 		private decimal _valorCobrado;
 		private string _localPagamento = "Até o vencimento, preferencialmente no ";
-		private int _quantidadeMoeda = 1;
+		private string _quantidadeMoeda = "1";
 		private string _valorMoeda = string.Empty;
 		private IList<IInstrucao> _instrucoes = new List<IInstrucao>();
         private IEspecieDocumento _especieDocumento;
@@ -221,7 +221,7 @@ namespace BoletoNet
 		/// <summary> 
 		/// Retorna a quantidade da moeda.
 		/// </summary>
-		public int QuantidadeMoeda
+		public string QuantidadeMoeda
 		{
 			get { return this._quantidadeMoeda; }
 			set { this._quantidadeMoeda = value; }
@@ -605,7 +605,7 @@ namespace BoletoNet
 		{
 			try
 			{
-				this.QuantidadeMoeda = 0;
+				this.QuantidadeMoeda = "0";
 				this.Banco.FormataCodigoBarra(this);
 				this.Banco.FormataLinhaDigitavel(this);
 			}

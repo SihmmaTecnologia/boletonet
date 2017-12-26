@@ -721,7 +721,7 @@ namespace BoletoNet
 		        .Replace("@NOSSONUMERO", Boleto.NossoNumero)
 		        .Replace("@CARTEIRA", FormataDescricaoCarteira())
 		        .Replace("@ESPECIE", Boleto.Especie)
-		        .Replace("@QUANTIDADE", (Boleto.QuantidadeMoeda == 0 ? "" : Boleto.QuantidadeMoeda.ToString()))
+		        .Replace("@QUANTIDADE", (Boleto.QuantidadeMoeda == "0" ? "" : Boleto.QuantidadeMoeda.ToString()))
 		        .Replace("@VALORDOCUMENTO", Boleto.ValorMoeda)
 		        .Replace("@=VALORDOCUMENTO", valorBoleto)
 		        .Replace(
