@@ -103,6 +103,7 @@
     <Compile Include="Banco\Carteiras\IBancoCarteira.cs" />
     <Compile Include="Banco\Carteiras\TipoCarteiraAttribute.cs" />
     <Compile Include="Banco\MotivosOcorrencia.cs" />
+    <Compile Include="Boleto\CodigoMovimento\CodigoMovimento_Bradesco.cs" />
     <Compile Include="Boleto\CodigoMovimento\CodigoMovimento_Itau.cs" />
     <Compile Include="Boleto\CodigoMovimento\CodigoMovimento_Sicredi.cs" />
     <Compile Include="Boleto\DadosGeracaoNossoNumero.cs" />
