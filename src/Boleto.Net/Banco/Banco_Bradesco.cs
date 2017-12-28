@@ -40,9 +40,9 @@ namespace BoletoNet
         /// </summary>
         public string CalcularDigitoNossoNumero(Boleto boleto)
         {
-            var digito = Mod11(boleto.Carteira + Utils.FormatCode(boleto.NossoNumero, 11), 7);
+            var digito = Mod11Bradesco(boleto.Carteira + Utils.FormatCode(boleto.NossoNumero, 11), 7);
 
-            return digito == 1 ? "P" : digito.ToString();
+            return digito;
         }
 
         #region IBanco Members
@@ -220,6 +220,60 @@ namespace BoletoNet
             var digVerificador = CalcularDigitoNossoNumero(boleto);
 
             return string.Format("{0}/{1}-{2}", Utils.FormatCode(boleto.Carteira, 3), nossoNumero, digVerificador);
+        }
+
+        private string Mod11Bradesco(string seq, int b)
+        {
+            #region Trecho do manual layout_cobranca_port.pdf do BRADESCO
+            /* 
+            Para o cálculo do dígito, será necessário acrescentar o número da carteira à esquerda antes do Nosso Número, 
+            e aplicar o módulo 11, com base 7.
+            Multiplicar cada algarismo que compõe o número pelo seu respectivo multiplicador (PESO).
+            Os multiplicadores(PESOS) variam de 2 a 7.
+            O primeiro dígito da direita para a esquerda deverá ser multiplicado por 2, o segundo por 3 e assim sucessivamente.
+             
+              Carteira   Nosso Numero
+                ______   _________________________________________
+                1    9   0   0   0   0   0   0   0   0   0   0   2
+                x    x   x   x   x   x   x   x   x   x   x   x   x
+                2    7   6   5   4   3   2   7   6   5   4   3   2
+                =    =   =   =   =   =   =   =   =   =   =   =   =
+                2 + 63 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 4 = 69
+            O total da soma deverá ser dividido por 11: 69 / 11 = 6 tendo como resto = 3
+            A diferença entre o divisor e o resto, será o dígito de autoconferência: 11 - 3 = 8 (dígito de auto-conferência)
+            
+            Se o resto da divisão for “1”, desprezar o cálculo de subtração e considerar o dígito como “P”. 
+            Se o resto da divisão for “0”, desprezar o cálculo de subtração e considerar o dígito como “0”.
+            */
+            #endregion
+
+            /* Variáveis
+             * -------------
+             * s - Soma
+             * p - Peso
+             * b - Base
+             * r - Resto
+             */
+
+            int s = 0, p = 2;
+
+            for (int i = seq.Length; i > 0; i--)
+            {
+                s = s + (Convert.ToInt32(seq.Mid(i, 1)) * p);
+                if (p == b)
+                    p = 2;
+                else
+                    p = p + 1;
+            }
+
+            int r = (s % 11);
+
+            if (r == 0)
+                return "0";
+            else if (r == 1)
+                return "P";
+            else
+                return (11 - r).ToString();
         }
 
         public override void ValidaBoleto(Boleto boleto)
