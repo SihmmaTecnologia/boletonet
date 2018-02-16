@@ -930,7 +930,7 @@ namespace BoletoNet
                 _detalhe += Utils.FitStringLength(boleto.NossoNumero, 11, 11, '0', 0, true, true, true); //Nosso Numero (11)
 
                 // Força o NossoNumero a ter 11 dígitos. Alterado por Luiz Ponce 07/07/2012
-                _detalhe +=  Mod11(boleto.Carteira + Utils.FormatCode(boleto.NossoNumero, 11), 7).ToString(); // Digito de Auto Conferencia do Nosso Número (01)
+                _detalhe += Mod11Bradesco(boleto.Carteira + Utils.FormatCode(boleto.NossoNumero, 11), 7); // Digito de Auto Conferencia do Nosso Número (01)
                 //Desconto Bonificação por dia (10, N)
                 _detalhe += "0000000000";
 

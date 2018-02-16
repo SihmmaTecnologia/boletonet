@@ -98,10 +98,11 @@ namespace BoletoNet
                                 numeroRegistro++;
                             }
                         }
-                    }                    
+                    }
                     if ((boleto.Instrucoes != null && boleto.Instrucoes.Count > 0) || (boleto.Sacado.Instrucoes != null && boleto.Sacado.Instrucoes.Count > 0))
                     {
-                        if (banco.Codigo != 341 || (banco.Codigo == 341 && boleto.Instrucoes.All(o => o.Codigo != 0)))
+                        // Desconsiderar instruções no caso banco Bradesco (237)
+                        if (banco.Codigo != 237 || banco.Codigo != 341 || (banco.Codigo == 341 && boleto.Instrucoes.All(o => o.Codigo != 0)))
                         {
                             strline = boleto.Banco.GerarMensagemVariavelRemessa(boleto, ref numeroRegistro, TipoArquivo.CNAB400);
                             if (!string.IsNullOrEmpty(strline) && !string.IsNullOrWhiteSpace(strline))
