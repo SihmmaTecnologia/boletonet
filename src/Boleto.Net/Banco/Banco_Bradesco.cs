@@ -982,8 +982,7 @@ namespace BoletoNet
                     _detalhe += boleto.Remessa.CodigoOcorrencia.PadLeft(2, '0');
                 }
 
-
-                _detalhe += Utils.FormatCode(boleto.NumeroDocumento, "0", 10, false); //Nº do Documento (10, A)
+                _detalhe += Utils.FitStringLength(boleto.NumeroDocumento, 10, 10, '0', 0, true, true, true); //Nº do Documento (10, A)
                 _detalhe += boleto.DataVencimento.ToString("ddMMyy"); //Data do Vencimento do Título (10, N) DDMMAA
 
                 //Valor do Título (13, N)
@@ -1013,7 +1012,7 @@ namespace BoletoNet
                 string vInstrucao1 = "00"; //1ª instrução (2, N) Caso Queira colocar um cod de uma instrução. ver no Manual caso nao coloca 00
                 string vInstrucao2 = "00"; //2ª instrução (2, N) Caso Queira colocar um cod de uma instrução. ver no Manual caso nao coloca 00
 
-                foreach (Instrucao_Bradesco instrucao in boleto.Instrucoes)
+                foreach (var instrucao in boleto.Instrucoes)
                 {
                     switch ((EnumInstrucoes_Bradesco)instrucao.Codigo)
                     {
@@ -1095,7 +1094,15 @@ namespace BoletoNet
                 _detalhe += Utils.FitStringLength(boleto.Sacado.Nome.TrimStart(' '), 40, 40, ' ', 0, true, true, false).ToUpper();
 
                 //Endereço Completo (40, A)
-                _detalhe += Utils.FitStringLength(boleto.Sacado.Endereco.Numero.TrimStart(' '), 40, 40, ' ', 0, true, true, false).ToUpper();
+                var enderecoSacado = boleto.Sacado.Endereco;
+
+                if (enderecoSacado == null || !string.IsNullOrEmpty(enderecoSacado.End) || !string.IsNullOrEmpty(enderecoSacado.Numero))
+                {
+                    throw new Exception("Verifique os endereços dos clientes para os quais os boletos estão sendo impressos.");
+                }
+
+                var enderecoFormatado = $"{enderecoSacado.End} {enderecoSacado.Numero}";
+                _detalhe += Utils.FitStringLength(enderecoFormatado.TrimStart(' '), 40, 40, ' ', 0, true, true, false).ToUpper();
 
                 //1ª Mensagem (12, A)
                 /*Campo livre para uso da Empresa. A mensagem enviada nesse campo será impressa
