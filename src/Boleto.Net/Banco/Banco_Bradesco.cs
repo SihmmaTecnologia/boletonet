@@ -1096,7 +1096,7 @@ namespace BoletoNet
                 //Endereço Completo (40, A)
                 var enderecoSacado = boleto.Sacado.Endereco;
 
-                if (enderecoSacado == null || !string.IsNullOrEmpty(enderecoSacado.End) || !string.IsNullOrEmpty(enderecoSacado.Numero))
+                if (enderecoSacado == null || string.IsNullOrEmpty(enderecoSacado.End) || string.IsNullOrEmpty(enderecoSacado.Numero))
                 {
                     throw new Exception("Verifique os endereços dos clientes para os quais os boletos estão sendo impressos.");
                 }
