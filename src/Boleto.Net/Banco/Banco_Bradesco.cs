@@ -518,7 +518,7 @@ namespace BoletoNet
                 detalhe.ValorTitulo = valorTitulo / 100;
 
                 //Banco Cobrador ==> 166 a 168
-                detalhe.CodigoBanco = Utils.ToInt32(registro.Substring(165, 3));
+                detalhe.CodigoBanco = 237;
 
                 //Agência Cobradora ==> 169 a 173
                 detalhe.AgenciaCobradora = Utils.ToInt32(registro.Substring(168, 5));
