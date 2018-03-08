@@ -83,15 +83,8 @@ namespace BoletoNet
                 throw new BoletoNetException("Nosso número inválido");
 
             string nossoNumero;
-            if (sequencial.Length == 9)
-            {
-                nossoNumero = sequencial.Substring(0, 8);
-                //Verifica se o digito verificador esta correto.
-                digitoVerificador = DigNossoNumeroSicredi(codigoBeneficiario, nossoNumero);
-                if (sequencial != (nossoNumero + digitoVerificador))
-                    throw new BoletoNetException("Digito verificador é inválido!");
-            }
-            else if (sequencial.Length < 6)
+
+            if (sequencial.Length < 6)
             {
                 nossoNumero = DateTime.Now.ToString("yy") + "2" + Utils.FormatCode(sequencial, 5);
                 digitoVerificador = DigNossoNumeroSicredi(codigoBeneficiario, nossoNumero);
@@ -110,6 +103,7 @@ namespace BoletoNet
             {
                 throw new NotImplementedException();
             }
+
             return nossoNumero + digitoVerificador;
         }
 
@@ -826,11 +820,9 @@ namespace BoletoNet
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0019, 001, 0, CodJuros, ' '));                                  //019-019  Tipo de juros: 'A' - VALOR / 'B' PERCENTUAL
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0020, 028, 0, string.Empty, ' '));                              //020-047
                 #region Nosso Número + DV
-
-                string digitoVerificadorNossoNumro;
-                var nossoNumero = GerarNossoNumero(boleto.Cedente.Codigo, boleto.NossoNumero, out digitoVerificadorNossoNumro);
-
-                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0048, 009, 0, nossoNumero, '0'));                               //048-056
+                //string digitoVerificadorNossoNumro;
+                //var nossoNumero = GerarNossoNumero(boleto.Cedente.Codigo, boleto.NossoNumero, out digitoVerificadorNossoNumro);
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0048, 009, 0, boleto.NossoNumero, '0'));                               //048-056
                 #endregion
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0057, 006, 0, string.Empty, ' '));                              //057-062
                 reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediDataAAAAMMDD_________, 0063, 008, 0, boleto.DataProcessamento, ' '));                  //063-070
